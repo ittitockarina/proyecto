@@ -95,4 +95,10 @@ class PostgreSQLPool(object):
             self.close(conn, cursor)
             return res
 
- 
+    if __name__ == "__main__":
+        PostgreSQL_Pool = PostgreSQLPool()
+        sql = "select * from curso"        
+        rv = PostgreSQL_Pool.execute(sql)
+        for result in rv:
+            print(result)
+        print("done")
