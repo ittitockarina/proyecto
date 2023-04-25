@@ -1,104 +1,54 @@
-import time
-import psycopg2.pool
-import psycopg2.extras
+import psycopg2
+from psycopg2 import pool
+from configparser import ConfigParser
 
-import configparser
-config = configparser.ConfigParser()
-config.read('/home/kary/Documentos/mio/postgres_config.ini')
+class PostgreSQLPool:
+    def __init__(self, filename='/home/kary/Documentos/mio/postgres_config.ini', section='postgres'):
+        db = self._config(filename=filename, section=section)
+        self.connection_pool = psycopg2.pool.SimpleConnectionPool(1, 3,
+            host=db['host'],
+            port=db['port'],
+            database=db['database'],
+            user=db['user'],
+            password=db['pass'])
 
-dbconfig = {
-    "host":config.get('postgres', 'host'),
-    "port":config.get('postgres', 'port'),
-    "user":config.get('postgres', 'user'),
-    "password":config.get('postgres', 'pass'),
-    "database":config.get('postgres', 'database'),
-}
+    def _config(self, filename, section):
+        parser = ConfigParser()
+        parser.read(filename)
 
-
-class PostgreSQLPool(object):
-    """
-    create a pool when connect postgresql, which will decrease the time spent in 
-    request connection, create connection and close connection.
-    """
-    def __init__(self):             
-        self.pool = self.create_pool(pool_name='task_pool', pool_size=3)
-
-    def create_pool(self, pool_name, pool_size):
-        """
-        Create a connection pool, after created, the request of connecting 
-        PostgreSQL could get a connection from this pool instead of request to 
-        create a connection.
-        :param pool_name: the name of pool, default is "mypool"
-        :param pool_size: the size of pool, default is 3
-        :return: connection pool
-        """
-        pool = psycopg2.pool.SimpleConnectionPool(
-            pool_name=pool_name,
-            pool_size=pool_size,
-            **dbconfig)
-        return pool
-
-    def close(self, conn, cursor):
-        """
-        A method used to close connection of PostgreSQL.
-        :param conn: 
-        :param cursor: 
-        :return: 
-        """
-        cursor.close()
-        conn.close()
-
-    def execute(self, sql, args=None, commit=False):
-        """
-        Execute a sql, it could be with args and with out args. The usage is 
-        similar with execute() function in module pymysql.
-        :param sql: sql clause
-        :param args: args need by sql clause
-        :param commit: whether to commit
-        :return: if commit, return None, else, return result
-        """
-        # get connection form connection pool instead of create one.
-        conn = self.pool.getconn()
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        if args:
-            cursor.execute(sql, args)
+        if parser.has_section(section):
+            params = parser.items(section)
+            db = {param[0]: param[1] for param in params}
         else:
-            cursor.execute(sql)
-        if commit is True:
-            conn.commit()
-            self.close(conn, cursor)
-            return cursor
-        else:
-            res = cursor.fetchall()
-            self.close(conn, cursor)
-            return res
+            raise Exception(f'Section {section} not found in the {filename} file')
 
-    def executemany(self, sql, args, commit=False):
-        """
-        Execute with many args. Similar with executemany() function in pymysql.
-        args should be a sequence.
-        :param sql: sql clause
-        :param args: args
-        :param commit: commit or not.
-        :return: if commit, return None, else, return result
-        """
-        # get connection form connection pool instead of create one.
-        conn = self.pool.get_connection()
-        cursor = conn.cursor()
-        cursor.executemany(sql, args)
-        if commit is True:
-            conn.commit()
-            self.close(conn, cursor)
-            return None
-        else:
-            res = cursor.fetchall()
-            self.close(conn, cursor)
-            return res
+        return db
 
-    if __name__ == "__main__":
-        PostgreSQL_Pool = PostgreSQLPool()
-        sql = "select * from curso"        
-        rv = PostgreSQL_Pool.execute(sql)
-        for result in rv:
-            print(result)
-        print("done")
+    def execute(self, query, params=None, commit=False):
+        connection = self.connection_pool.getconn()
+        cursor = connection.cursor()
+        cursor.execute(query, params)
+        if commit:
+            connection.commit()
+        self.connection_pool.putconn(connection)
+        return cursor
+
+    def create_pool(self):
+        self.connection_pool = psycopg2.pool.SimpleConnectionPool(1, 3,
+            host=db['host'],
+            port=db['port'],
+            database=db['database'],
+            user=db['user'],
+            password=db['pass'])
+
+    def close(self):
+        self.connection_pool.closeall()
+
+    def executemany(self, query, data_list, commit=False):
+        connection = self.connection_pool.getconn()
+        cursor = connection.cursor()
+        cursor.executemany(query, data_list)
+        if commit:
+            connection.commit()
+        self.connection_pool.putconn(connection)
+        return cursor

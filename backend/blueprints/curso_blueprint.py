@@ -6,8 +6,8 @@ from werkzeug.utils import secure_filename
 import json
 from flask_cors import CORS, cross_origin
  
-from backend.models.curso_model import curso_model
-model=curso_model()
+from backend.models.curso_model import cursoModel
+model=cursoModel()
 
 
 

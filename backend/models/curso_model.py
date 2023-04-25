@@ -1,6 +1,6 @@
 from backend.models.postgres_connection_pool import PostgreSQLPool
 
-class UserModel:
+class cursoModel:
     def __init__(self):        
         self.PostgreSQL_Pool = PostgreSQLPool()
 
@@ -37,7 +37,7 @@ class UserModel:
         data['id_curso'] = cursor.lastrowid
         return data
 
-    def update_curso(self, id_curso, id_grupo, nombre_curso, ):    
+    def update_curso(self, id_curso, id_grupo, nombre_curso ):    
         data = {
             'id_curso' : id_curso,
             'id_grupo' : id_grupo,
