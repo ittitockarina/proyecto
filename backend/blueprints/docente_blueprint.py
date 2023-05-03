@@ -4,11 +4,10 @@ from flask import request
 from flask import jsonify
 from werkzeug.utils import secure_filename
 import json
-from flask_cors import CORS, cross_origin
- 
-from backend.models.docente_model import docenteModel
-model=docenteModel()
+from flask_cors import CORS, cross_origin 
 
+from backend.models.docente_model import DocenteModel
+model = DocenteModel()
 
 
 docente_blueprint = Blueprint('docente_blueprint', __name__)
@@ -16,8 +15,8 @@ docente_blueprint = Blueprint('docente_blueprint', __name__)
 
 @docente_blueprint.route('/docente', methods=['PUT'])
 @cross_origin()
-def crear_docente():
-    content = model.crear_docente(request.json['id_docente'],request.json['tipo_docente'], request.json['curso_docente'])    
+def create_docente():
+    content = model.create_docente(request.json['tipo_docente'], request.json['curso_docente'])    
     return jsonify(content)
 
 @docente_blueprint.route('/docente', methods=['PATCH'])
@@ -33,10 +32,10 @@ def delete_docente():
 
 @docente_blueprint.route('/docente', methods=['POST'])
 @cross_origin()
-def docente():
+def get_docente():
     return jsonify(model.get_docente(int(request.json['id_docente'])))
 
-@docente_blueprint.route('/docente', methods=['POST'])
+@docente_blueprint.route('/docentes', methods=['POST'])
 @cross_origin()
-def docente():
-    return jsonify(model.get_docente())
+def get_docentes():
+    return jsonify(model.get_docentes())

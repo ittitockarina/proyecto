@@ -3,7 +3,7 @@ from psycopg2 import pool
 from configparser import ConfigParser
 
 class PostgreSQLPool:
-    def __init__(self, filename='/home/kary/Documentos/mio/postgres_config.ini', section='postgres'):
+    def __init__(self, filename='/home/karolyto/Documentos/mio/postgres_config.ini', section='postgres'):
         db = self._config(filename=filename, section=section)
         self.connection_pool = psycopg2.pool.SimpleConnectionPool(1, 3,
             host=db['host'],

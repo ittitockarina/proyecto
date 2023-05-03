@@ -16,7 +16,7 @@ class AlumnoModel:
             content = {}
         return data
 
-    def get_alumno(self):  
+    def get_alumnos(self):  
         rv = self.PostgreSQL_Pool.execute("SELECT * from alumno")  
         data = []
         content = {}

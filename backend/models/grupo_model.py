@@ -1,65 +1,62 @@
-from models.postgres_connection_pool import PostgreSQLPool
+from backend.models.postgres_connection_pool import PostgreSQLPool
+#PostgreSQL_Pool
 
-class UsuarioModel:
+class grupoModel:
     def __init__(self):        
-        self.mysql_pool = PostgreSQLPool()
+        self.PostgreSQL_Pool = PostgreSQLPool()
 
-    def get_usuario(self, id_usuario):    
-        params = {'id_usuario' : id_usuario}      
-        rv = self.mysql_pool.execute("SELECT * from usuario where id_usuario=%(id_usuario)s", params)                
+    def get_grupo(self, id_grupo):    
+        params = {'id_grupo' : id_grupo}      
+        rv = self.PostgreSQL_Pool.execute("SELECT * from grupo where id_grupo=%(id_grupo)s", params)                
         data = []
         content = {}
         for result in rv:
-            content = {'id_usuario': result[0], 'dni': result[1], 'passw': result[2],'nombre': result[3], 'apellido': result[4], 'email': result[5]}
+            content = {'id_grupo': result[0], 'id_curso': result[1], 'nombre_grupo': result[2], 'aula': result[3]}
             data.append(content)
             content = {}
         return data
 
-    def get_usuarios(self):  
-        rv = self.mysql_pool.execute("SELECT * from usuario")  
+    def get_grupos(self):  
+        rv = self.PostgreSQL_Pool.execute("SELECT * from grupo")  
         data = []
         content = {}
         for result in rv:
-            content = {'id_usuario': result[0], 'dni': result[1], 'passw': result[2],'nombre': result[3], 'apellido': result[4], 'email': result[5]}
+            content = {'id_grupo': result[0], 'id_curso': result[1], 'nombre_grupo': result[2], 'aula': result[3]}
             data.append(content)
             content = {}
         return data
 
-    def create_usuario(self, dni, passw,nombre,apellido,email):    
+    def create_grupo(self, id_curso, nombre_grupo,aula):    
         data = {
-            'dni' : dni,
-            'passw' : passw,
-            'nombre' : nombre,
-            'apellido' : apellido,
-            'email' : email
+            'id_curso' : id_curso,
+            'nombre_grupo' : nombre_grupo,
+            'aula' : aula
         }  
-        query = """insert into usuario (dni, passw,nombre,apellido,email) 
-            values (%(dni)s, %(passw)s, %(nombre)s, %(apellido)s, %(email)s)"""    
-        cursor = self.mysql_pool.execute(query, data, commit=True)   
+        query = """insert into grupo (id_curso, nombre_grupo,aula) 
+            values (%(id_curso)s, %(nombre_grupo)s, %(aula)s)"""    
+        cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
 
-        data['id_usuario'] = cursor.lastrowid
+        data['id_grupo'] = cursor.lastrowid
         return data
 
-    def update_usuario(self, id_usuario, dni, passw,nombre,apellido,email):    
+    def update_grupo(self, id_grupo, id_curso, nombre_grupo,aula):    
         data = {
-            'id_usuario' : id_usuario,
-            'dni' : dni,
-            'passw' : passw,
-            'nombre' : nombre,
-            'apellido' : apellido,
-            'email' : email
+            'id_grupo' : id_grupo,
+            'id_curso' : id_curso,
+            'nombre_grupo' : nombre_grupo,
+            'aula' : aula
         }  
-        query = """update usuario set dni = %(dni)s, passw = %(passw)s, nombre = %(nombre)s, apellido = %(apellido)s, email = %(email)s
-                where id_usuario = %(id_usuario)s"""    
-        cursor = self.mysql_pool.execute(query, data, commit=True)   
+        query = """update grupo set id_curso = %(id_curso)s, nombre_grupo = %(nombre_grupo)s, aula = %(aula)s
+                where id_grupo = %(id_grupo)s"""    
+        cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
 
         result = {'result':1} 
         return result
 
-    def delete_usuario(self, id_usuario):    
-        params = {'id_usuario' : id_usuario}      
-        query = """delete from usuario where id_usuario = %(id_usuario)s"""    
-        self.mysql_pool.execute(query, params, commit=True)   
+    def delete_grupo(self, id_grupo):    
+        params = {'id_grupo' : id_grupo}      
+        query = """delete from grupo where id_grupo = %(id_grupo)s"""    
+        self.PostgreSQL_Pool.execute(query, params, commit=True)   
 
         result = {'result': 1}
         return result 

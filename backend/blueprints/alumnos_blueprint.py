@@ -17,7 +17,7 @@ alumnos_blueprint = Blueprint('alumnos_blueprint', __name__)
 @alumnos_blueprint.route('/alumno', methods=['PUT'])
 @cross_origin()
 def crear_alumno():
-    content = model.crear_alumno(request.json['id_alumno'],request.json['alumno_regular'], request.json['alumno_year'])    
+    content = model.crear_alumno(request.json['alumno_regular'], request.json['alumno_year'])    
     return jsonify(content)
 
 @alumnos_blueprint.route('/alumno', methods=['PATCH'])
@@ -33,10 +33,10 @@ def delete_alumno():
 
 @alumnos_blueprint.route('/alumno', methods=['POST'])
 @cross_origin()
-def alumno():
+def get_alumno():
     return jsonify(model.get_alumno(int(request.json['id_alumno'])))
 
 @alumnos_blueprint.route('/alumnos', methods=['POST'])
 @cross_origin()
-def alumnos():
+def get_alumnos():
     return jsonify(model.get_alumnos())

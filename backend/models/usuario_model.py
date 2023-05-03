@@ -1,4 +1,4 @@
-from models.postgres_connection_pool import PostgreSQLPool
+from backend.models.postgres_connection_pool import PostgreSQLPool
 
 class UsuarioModel:
     def __init__(self):        

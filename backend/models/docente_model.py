@@ -1,12 +1,12 @@
-from models.postgres_connection_pool import PostgreSQLPool
+from backend.models.postgres_connection_pool import PostgreSQLPool
 
 class DocenteModel:
     def __init__(self):        
-        self.mysql_pool = PostgreSQLPool()
+        self.PostgreSQL_Pool = PostgreSQLPool()
 
     def get_docente(self, id_docente):    
         params = {'id_docente' : id_docente}      
-        rv = self.mysql_pool.execute("SELECT * from docente where id_docente=%(id_docente)s", params)                
+        rv = self.PostgreSQL_Pool.execute("SELECT * from docente where id_docente=%(id_docente)s", params)                
         data = []
         content = {}
         for result in rv:
@@ -16,7 +16,7 @@ class DocenteModel:
         return data
 
     def get_docentes(self):  
-        rv = self.mysql_pool.execute("SELECT * from docente")  
+        rv = self.PostgreSQL_Pool.execute("SELECT * from docente")  
         data = []
         content = {}
         for result in rv:
@@ -32,7 +32,7 @@ class DocenteModel:
         }  
         query = """insert into docente (tipo_docente, curso_docente) 
             values (%(tipo_docente)s, %(curso_docente)s)"""    
-        cursor = self.mysql_pool.execute(query, data, commit=True)   
+        cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
 
         data['id_docente'] = cursor.lastrowid
         return data
@@ -45,7 +45,7 @@ class DocenteModel:
         }  
         query = """update docente set tipo_docente = %(tipo_docente)s, curso_docente = %(curso_docente)s
                 where id_docente = %(id_docente)s"""    
-        cursor = self.mysql_pool.execute(query, data, commit=True)   
+        cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
 
         result = {'result':1} 
         return result
@@ -53,7 +53,7 @@ class DocenteModel:
     def delete_docente(self, id_docente):    
         params = {'id_docente' : id_docente}      
         query = """delete from docente where id_docente = %(id_docente)s"""    
-        self.mysql_pool.execute(query, params, commit=True)   
+        self.PostgreSQL_Pool.execute(query, params, commit=True)   
 
         result = {'result': 1}
         return result 

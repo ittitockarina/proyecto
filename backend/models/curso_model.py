@@ -15,7 +15,7 @@ class cursoModel:
             content = {}
         return data
 
-    def get_curso(self):  
+    def get_cursos(self):  
         rv = self.PostgreSQL_Pool.execute("SELECT * from curso")  
         data = []
         content = {}

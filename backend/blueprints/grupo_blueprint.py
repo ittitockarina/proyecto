@@ -6,36 +6,36 @@ from werkzeug.utils import secure_filename
 import json
 from flask_cors import CORS, cross_origin 
 
-from backend.models.usuario_model import UsuarioModel
-model = UsuarioModel()
+from backend.models.grupo_model import grupoModel
+model = grupoModel()
 
 
-usuario_blueprint = Blueprint('usuario_blueprint', __name__)
+grupo_blueprint = Blueprint('grupo_blueprint', __name__)
 
 
-@usuario_blueprint.route('/usuario', methods=['PUT'])
+@grupo_blueprint.route('/grupo', methods=['PUT'])
 @cross_origin()
-def create_usuario():
-    content = model.create_usuario(request.json['dni'], request.json['passw'], request.json['nombre'], request.json['apellido'], request.json['email'])    
+def create_grupo():
+    content = model.create_grupo(request.json['id_curso'], request.json['nombre_grupo'], request.json['aula'])    
     return jsonify(content)
 
-@usuario_blueprint.route('/usuario', methods=['PATCH'])
+@grupo_blueprint.route('/grupo', methods=['PATCH'])
 @cross_origin()
-def update_usuario():
-    content = model.update_usuario(request.json['id_usuario'],request.json['dni'], request.json['passw'], request.json['nombre'], request.json['apellido'], request.json['email'])    
+def update_grupo():
+    content = model.update_grupo(request.json['id_grupo'], request.json['id_curso'], request.json['nombre_grupo'], request.json['aula'])    
     return jsonify(content)
 
-@usuario_blueprint.route('/usuario', methods=['DELETE'])
+@grupo_blueprint.route('/grupo', methods=['DELETE'])
 @cross_origin()
-def delete_usuario():
-    return jsonify(model.delete_usuario(int(request.json['id_usuario'])))
+def delete_grupo():
+    return jsonify(model.delete_grupo(int(request.json['id_grupo'])))
 
-@usuario_blueprint.route('/usuario', methods=['POST'])
+@grupo_blueprint.route('/grupo', methods=['POST'])
 @cross_origin()
-def get_usuario():
-    return jsonify(model.get_usuario(int(request.json['id_usuario'])))
+def get_grupo():
+    return jsonify(model.get_grupo(int(request.json['id_grupo'])))
 
-@usuario_blueprint.route('/usuarios', methods=['POST'])
+@grupo_blueprint.route('/grupos', methods=['POST'])
 @cross_origin()
-def get_usuarios():
-    return jsonify(model.get_usuarios())
+def get_grupos():
+    return jsonify(model.get_grupos())
