@@ -11,7 +11,7 @@ class AsistenciaModel:
         data = []
         content = {}
         for result in rv:
-            content = {'id_asist': result[0], 'asistencia_regular': result[1], 'asistencia_year': result[2]}
+            content = {'id_asist': result[0], 'fecha': result[1], 'id_horario': result[2], 'id_alumno': result[3], 'presente': result[4]}
             data.append(content)
             content = {}
         return data
@@ -21,30 +21,30 @@ class AsistenciaModel:
         data = []
         content = {}
         for result in rv:
-            content = {'id_asist': result[0], 'asistencia_regular': result[1], 'asistencia_year': result[2]}
+            content = {'id_asist': result[0], 'fecha': result[1], 'id_horario': result[2], 'id_alumno': result[3], 'presente': result[4]}
             data.append(content)
             content = {}
         return data
 
-    def crear_asistencia(self, asistencia_regular, asistencia_year):    
+    def crear_asistencia(self, fecha, id_horario):    
         data = {
-            'asistencia_regular' : asistencia_regular,
-            'asistencia_year' : asistencia_year,
+            'fecha' : fecha,
+            'id_horario' : id_horario,
         }  
-        query = """insert into asistencia (asistencia_regular, asistencia_year) 
-            values (%(asistencia_regular)s, %(asistencia_year)s)"""    
+        query = """insert into asistencia (fecha, id_horario) 
+            values (%(fecha)s, %(id_horario)s)"""    
         cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
 
         data['id_asist'] = cursor.lastrowid
         return data
 
-    def update_asistencia(self, id_asist, asistencia_regular, asistencia_year):    
+    def update_asistencia(self, id_asist, fecha, id_horario):    
         data = {
             'id_asist' : id_asist,
-            'asistencia_regular' : asistencia_regular,
-            'asistencia_year' : asistencia_year,
+            'fecha' : fecha,
+            'id_horario' : id_horario,
         }  
-        query = """update asistencia set asistencia_regular = %(asistencia_regular)s, asistencia_year = %(asistencia_year)s where id_asist = %(id_asist)s"""    
+        query = """update asistencia set fecha = %(fecha)s, id_horario = %(id_horario)s where id_asist = %(id_asist)s"""    
         cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
 
         result = {'result':1} 
