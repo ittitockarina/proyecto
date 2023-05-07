@@ -1,6 +1,6 @@
-from backend.models.postgres_connection_pool import PostgreSQLPool
+from backend.models.postgres_connection_pool2 import PostgreSQLPool
 
-class cursoModel:
+class CursoModel:
     def __init__(self):        
         self.PostgreSQL_Pool = PostgreSQLPool()
 
@@ -10,7 +10,7 @@ class cursoModel:
         data = []
         content = {}
         for result in rv:
-            content = {'id_curso': result[0], 'id_grupo': result[1], 'nombre_curso': result[2]}
+            content = {'id_curso': result[0], 'nombre_curso': result[1]}
             data.append(content)
             content = {}
         return data
@@ -20,30 +20,28 @@ class cursoModel:
         data = []
         content = {}
         for result in rv:
-            content = {'id_curso': result[0], 'id_grupo': result[1], 'nombre_curso': result[2]}
+            content = {'id_curso': result[0], 'nombre_curso': result[1]}
             data.append(content)
             content = {}
         return data
 
-    def crear_curso(self, id_grupo, nombre_curso):    
+    def crear_curso(self, nombre_curso):    
         data = {
-            'id_grupo' : id_grupo,
-            'nombre_curso' : nombre_curso,
+            'nombre_curso' : nombre_curso
         }  
-        query = """insert into curso (id_grupo, nombre_curso ) 
-            values (%(id_grupo)s, %(nombre_curso)s)"""    
+        query = """insert into curso (nombre_curso) 
+            values (%(nombre_curso)s)"""    
         cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
 
         data['id_curso'] = cursor.lastrowid
         return data
 
-    def update_curso(self, id_curso, id_grupo, nombre_curso ):    
+    def update_curso(self, id_curso, nombre_curso):    
         data = {
             'id_curso' : id_curso,
-            'id_grupo' : id_grupo,
             'nombre_curso' : nombre_curso,
         }  
-        query = """update curso set id_grupo = %(id_grupo)s, nombre_curso = %(nombre_curso)s where id_curso = %(id_curso)s"""    
+        query = """update curso set nombre_curso = %(nombre_curso)s where id_curso = %(id_curso)s"""    
         cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
 
         result = {'result':1} 
@@ -56,5 +54,3 @@ class cursoModel:
 
         result = {'result': 1}
         return result 
-
-

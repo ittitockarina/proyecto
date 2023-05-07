@@ -13,17 +13,16 @@ model=cursoModel()
 
 curso_blueprint = Blueprint('curso_blueprint', __name__)
 
-
 @curso_blueprint.route('/curso', methods=['PUT'])
 @cross_origin()
 def crear_curso():
-    content = model.crear_curso(request.json['id_grupo'], request.json['nombre_curso'])    
+    content = model.crear_curso(request.json['nombre_curso'])    
     return jsonify(content)
 
 @curso_blueprint.route('/curso', methods=['PATCH'])
 @cross_origin()
 def update_curso():
-    content = model.update_curso(request.json['id_curso'], request.json['id_grupo'], request.json['nombre_curso'])    
+    content = model.update_curso(request.json['id_curso'], request.json['nombre_curso'])    
     return jsonify(content)
 
 @curso_blueprint.route('/curso', methods=['DELETE'])

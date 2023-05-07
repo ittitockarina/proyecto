@@ -16,13 +16,13 @@ docente_blueprint = Blueprint('docente_blueprint', __name__)
 @docente_blueprint.route('/docente', methods=['PUT'])
 @cross_origin()
 def create_docente():
-    content = model.create_docente(request.json['tipo_docente'], request.json['curso_docente'])    
+    content = model.create_docente(request.json['tipo_docente'],request.json['id_usuario'])    
     return jsonify(content)
 
 @docente_blueprint.route('/docente', methods=['PATCH'])
 @cross_origin()
 def update_docente():
-    content = model.update_docente(request.json['id_docente'], request.json['tipo_docente'], request.json['curso_docente'])    
+    content = model.update_docente(request.json['id_docente'], request.json['tipo_docente'],request.json['id_usuario'])    
     return jsonify(content)
 
 @docente_blueprint.route('/docente', methods=['DELETE'])

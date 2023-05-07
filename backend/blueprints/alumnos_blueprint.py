@@ -10,20 +10,18 @@ from backend.models.alumnos_model import AlumnoModel
 model=AlumnoModel()
 
 
-
 alumnos_blueprint = Blueprint('alumnos_blueprint', __name__)
-
 
 @alumnos_blueprint.route('/alumno', methods=['PUT'])
 @cross_origin()
 def crear_alumno():
-    content = model.crear_alumno(request.json['alumno_regular'], request.json['alumno_year'])    
+    content = model.crear_alumno(request.json['alumno_regular'], request.json['alumno_year'], request.json['id_usuario'])    
     return jsonify(content)
 
 @alumnos_blueprint.route('/alumno', methods=['PATCH'])
 @cross_origin()
 def update_alumno():
-    content = model.update_alumno(request.json['id_alumno'], request.json['alumno_regular'], request.json['alumno_year'])    
+    content = model.update_alumno(request.json['id_alumno'], request.json['alumno_regular'], request.json['alumno_year'], request.json['id_usuario'])    
     return jsonify(content)
 
 @alumnos_blueprint.route('/alumno', methods=['DELETE'])
