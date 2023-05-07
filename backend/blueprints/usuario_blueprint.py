@@ -77,7 +77,7 @@ def crear_usuario():
         dni         = data_dni
         passw       = data_passw
         foto        = path
-        #vector      = toString(result["result"])
+        vector      = toString(result["result"])
         nombre      = data_nombre
         apellido    = data_apellido 
         email       = data_email

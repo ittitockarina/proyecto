@@ -1,11 +1,5 @@
 from backend.models.postgres_connection_pool import PostgreSQLPool
-#################################################
-#from flask_sqlalchemy import SQLAlchemy
-#from flask_marshmallow import Marshmallow
 
-#db = SQLAlchemy()
-#ma = Marshmallow()
-########################################33
 class UsuarioModel:
     def __init__(self):        
         self.mysql_pool = PostgreSQLPool()
@@ -23,14 +17,12 @@ class UsuarioModel:
 
     def get_usuarios(self):  
         rv = self.mysql_pool.execute("SELECT * from usuario")  
-        
         data = []
         content = {}
         for result in rv:
             content = {'id_usuario': result[0], 'dni': result[1], 'passw': result[2],'foto': result[3],'vector': result[4],'nombre': result[5], 'apellido': result[6], 'email': result[7]}
             data.append(content)
             content = {}
-            print(result)
         return data
 
     def create_usuario(self, dni, passw,foto,vector,nombre,apellido,email):    
@@ -75,19 +67,4 @@ class UsuarioModel:
 
         result = {'result': 1}
         return result 
-'''
-class UserSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'dni' ,
-            'passw' ,
-            'foto' ,
-            'vector' ,
-            'nombre' ,
-            'apellido' ,
-            'email' 
-            )
 
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
-'''
