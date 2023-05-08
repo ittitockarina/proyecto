@@ -4,10 +4,10 @@ from flask import request
 from flask import jsonify
 from werkzeug.utils import secure_filename
 import json
-from flask_cors import CORS, cross_origin 
-
+from flask_cors import CORS, cross_origin
+ 
 from backend.models.grupo_docente_model import Grupo_Docente_Model
-model = Grupo_Docente_Model()
+model=Grupo_Docente_Model()
 
 
 

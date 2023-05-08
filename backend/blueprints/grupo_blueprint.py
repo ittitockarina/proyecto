@@ -6,8 +6,8 @@ from werkzeug.utils import secure_filename
 import json
 from flask_cors import CORS, cross_origin 
 
-from backend.models.grupo_model import grupoModel
-model = grupoModel()
+from backend.models.grupo_model import GrupoModel
+model = GrupoModel()
 
 
 grupo_blueprint = Blueprint('grupo_blueprint', __name__)

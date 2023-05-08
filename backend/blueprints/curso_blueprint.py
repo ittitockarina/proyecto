@@ -6,12 +6,13 @@ from werkzeug.utils import secure_filename
 import json
 from flask_cors import CORS, cross_origin
  
-from backend.models.curso_model import cursoModel
-model=cursoModel()
+from backend.models.curso_model import CursoModel
+model=CursoModel()
 
 
 
 curso_blueprint = Blueprint('curso_blueprint', __name__)
+
 
 @curso_blueprint.route('/curso', methods=['PUT'])
 @cross_origin()

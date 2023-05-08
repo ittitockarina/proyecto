@@ -6,9 +6,8 @@ from werkzeug.utils import secure_filename
 import json
 from flask_cors import CORS, cross_origin
  
-from backend.models.alumnos_model import AlumnoModel
-model=AlumnoModel()
-
+from backend.models.alumnos_model import AlumnosModel
+model=AlumnosModel()
 
 alumnos_blueprint = Blueprint('alumnos_blueprint', __name__)
 

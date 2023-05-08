@@ -1,6 +1,8 @@
-from backend.models.postgres_connection_pool2 import PostgreSQLPool
+from backend.models.postgres_connection_pool import PostgreSQLPool
+
+
 #PostgreSQL_Pool
-class UserModel:
+class AlumnosModel:
     def __init__(self):        
         self.PostgreSQL_Pool = PostgreSQLPool()
 

@@ -1,11 +1,8 @@
 from backend.models.postgres_connection_pool import PostgreSQLPool
-
-model=AsistenciaModel()
 #PostgreSQL_Pool
 class AsistenciaModel:
     def __init__(self):        
         self.PostgreSQL_Pool = PostgreSQLPool()
-
 
     def get_asistencia(self, id_asist):    
         params = {'id_asist' : id_asist}      
@@ -13,7 +10,7 @@ class AsistenciaModel:
         data = []
         content = {}
         for result in rv:
-            content = {'id_asist': result[0], 'fecha': result[1], 'id_horario': result[2], 'id_alumno': result[3], 'presente': result[4]}
+            content = {'id_asist': result[0], 'fecha': result[1], 'id_horario': result[2], 'id_alumno': result[3],'presente': result[4]}
             data.append(content)
             content = {}
         return data
@@ -23,30 +20,34 @@ class AsistenciaModel:
         data = []
         content = {}
         for result in rv:
-            content = {'id_asist': result[0], 'fecha': result[1], 'id_horario': result[2], 'id_alumno': result[3], 'presente': result[4]}
+            content = {'id_asist': result[0], 'fecha': result[1], 'id_horario': result[2], 'id_alumno': result[3],'presente': result[4]}
             data.append(content)
             content = {}
         return data
 
-    def crear_asistencia(self, fecha, id_horario):    
+    def create_asistencia(self, fecha, id_horario,id_alumno,presente):    
         data = {
             'fecha' : fecha,
             'id_horario' : id_horario,
+            'id_alumno' : id_alumno,
+            'presente' : presente
         }  
-        query = """insert into asistencia (fecha, id_horario) 
-            values (%(fecha)s, %(id_horario)s)"""    
+        query = """insert into asistencia (fecha, id_horario,id_alumno,presente) 
+            values (%(fecha)s, %(id_horario)s, %(id_alumno)s,%(presente)s)"""    
         cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
 
         data['id_asist'] = cursor.lastrowid
         return data
 
-    def update_asistencia(self, id_asist, fecha, id_horario):    
+    def update_asistencia(self, id_asist, fecha, id_horario,id_alumno,presente):    
         data = {
             'id_asist' : id_asist,
             'fecha' : fecha,
             'id_horario' : id_horario,
+            'id_alumno' : id_alumno,
+            'presente' : presente
         }  
-        query = """update asistencia set fecha = %(fecha)s, id_horario = %(id_horario)s where id_asist = %(id_asist)s"""    
+        query = """update asistencia set fecha = %(fecha)s, id_horario = %(id_horario)s, id_alumno = %(id_alumno)s, presente = %(presente)s where id_asist = %(id_asist)s"""    
         cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
 
         result = {'result':1} 
@@ -59,29 +60,11 @@ class AsistenciaModel:
 
         result = {'result': 1}
         return result 
-
-
-    ####################
-    #logica para implementar marcado de easistencia
-    ######################
-
-    def asistencia_marcar():
-        f = request.files['file']
-        usuario=model.get_usuario(int(request.json['dni']))
-        path=usuario.path
-        path_compare = savePath(f)
-        result_usuarioBD = callOpenFaceAPI(path)
-        result_comparacion = callOpenFaceAPI(path_compare)
-
-        #para limpiar 
-        clean=toString(result_usuarioBD)
-        clean2=toString(result_comparacion)
-
-        result_compare=distanciaEuclidiana(toFloat(clean),toFloat(clean2))
-        if result_compare<=1:
-            model.crear_asistencia("","")
-            return "asistencia creada"
-        else 
-            return"mensaje no son iguales"
-
-        
+ 
+    def get_vector(self, dni):
+        params = {'dni': str(dni)}
+        rv = self.PostgreSQL_Pool.execute("SELECT vector FROM usuario WHERE dni = %(dni)s", params)
+        data = []
+        for result in rv:
+            data.append(result[0])
+        return data

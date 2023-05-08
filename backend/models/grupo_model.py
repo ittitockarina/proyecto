@@ -1,4 +1,4 @@
-from backend.models.postgres_connection_pool2 import PostgreSQLPool
+from backend.models.postgres_connection_pool import PostgreSQLPool
 
 class GrupoModel:
     def __init__(self):        

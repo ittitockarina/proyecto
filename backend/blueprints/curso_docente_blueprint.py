@@ -11,7 +11,6 @@ model=Curso_Docente_Model()
 
 
 
-
 curso_docente_blueprint = Blueprint('curso_docente_blueprint', __name__)
 
 
