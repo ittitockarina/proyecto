@@ -7,18 +7,18 @@ class UsuarioModel:
     def login(self, DNI, password):
         query = """
             SELECT usuario.id_usuario, usuario.dni, usuario.passw, usuario.foto, usuario.vector,
-                   usuario.nombre, usuario.apellido, usuario.email, tipo_usuario.tipo_usuario
+                usuario.nombre, usuario.apellido, usuario.email, tipo_usuario.tipo_usuario
             FROM usuario
             INNER JOIN tipo_usuario ON usuario.id_tipo_usuario = tipo_usuario.id_tipo_usuario
             WHERE usuario.dni = %(DNI)s AND usuario.passw = %(password)s
         """
+
         params = {
-            'DNI': DNI,
-            'password': password
+            'DNI': str(DNI),
+            'password': str(password)
         }
         rv = self.mysql_pool.execute(query, params)
         data = []
-        content = {}
         for result in rv:
             content = {
                 'id_usuario': result[0],
@@ -32,8 +32,8 @@ class UsuarioModel:
                 'tipo_usuario': result[8]
             }
             data.append(content)
-            content = {}
         return data
+
 
     def get_usuario(self, id_usuario):
         params = {'id_usuario': id_usuario}

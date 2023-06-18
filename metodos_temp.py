@@ -7,6 +7,7 @@ import json
 from flask_cors import CORS, cross_origin 
 import numpy as np
 import requests
+import math
 from scipy.spatial import distance
 
 class MetodosTemp:
@@ -50,8 +51,8 @@ class MetodosTemp:
         vector = vector.replace("\\","")
         vector = ''.join(vector.split('\n'))
         vector = vector.strip()
-    #lista_floats = [float(valor) for valor in vector.split()]
-    #tupla_floats = tuple(lista_floats)
+        #lista_floats = [float(valor) for valor in vector.split()]
+        #tupla_floats = tuple(lista_floats)
         return vector
     
     def transformacion2(vector):
@@ -63,25 +64,40 @@ class MetodosTemp:
         vector = vector.replace("\\","")
         vector = ''.join(vector.split('\n'))
         vector = vector.strip()
-    #lista_floats = [float(valor) for valor in vector.split()]
-    #tupla_floats = tuple(lista_floats)
+        #lista_floats = [float(valor) for valor in vector.split()]
+        #tupla_floats = tuple(lista_floats)
         return vector
 
     def toString(string):
         result = string.replace('{','').replace('}','')
         result = list(result.split(','))
         return result
-
+    @staticmethod
     def toFloat(arr):
         vector = []
-        for i in arr:
-            vector.append(float(i))
+        for i in arr.split(): 
+            vector.append(float(i.replace(",","")))
         return vector
     
     def Euclides(vector1,vector2):
-        lista_floats1 = [float(valor) for valor in vector1.split()]
+        """         lista_floats1 = [float(valor) for valor in vector1.split()]
         tupla_floats1 = tuple(lista_floats1)
         lista_floats2 = [float(valor) for valor in vector2.split()]
+        tupla_floats2 = tuple(lista_floats2) """
+        lista_floats1 = MetodosTemp.toFloat(vector1)
+        tupla_floats1 = tuple(lista_floats1)
+        lista_floats2 = MetodosTemp.toFloat(vector2)
         tupla_floats2 = tuple(lista_floats2)
         resultado = distance.euclidean(tupla_floats1, tupla_floats2)
         return resultado
+
+
+
+
+
+
+
+
+
+
+

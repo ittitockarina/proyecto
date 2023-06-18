@@ -54,6 +54,7 @@ def tomar_asistencia():
         vector1 = model.get_vector(data_dni)
         vector1 = MetodosTemp.transformacion2(vector1)
         comprobar = MetodosTemp.Euclides(vector1,vector2)
+        print(comprobar)
         if comprobar < 0.5 :
             return "la identidad es verdadera"
         else:

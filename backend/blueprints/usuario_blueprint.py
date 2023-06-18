@@ -24,13 +24,13 @@ model=UsuarioModel()
 model = UsuarioModel()
 
 usuario_blueprint = Blueprint('usuario_blueprint', __name__)
-
-@usuario_blueprint.route('/create_usuario', methods=['PUT'])
+CORS(usuario_blueprint, origins="http://localhost:8080") 
+@usuario_blueprint.route('/create_usuario', methods=['POST'])
 @cross_origin()
 def create_usuario():
     global model
 
-    if request.method == 'PUT':
+    if request.method == 'POST':
         # File and JSON data
         f = request.files['file']
         data_dni = json.loads(request.form.get('dni'))
@@ -109,7 +109,9 @@ def update_usuario():
 
     return "Usuario actualizado"
 
-@usuario_blueprint.route('/usuario', methods=['DELETE'])
+
+
+@usuario_blueprint.route('/delete_usuario', methods=['DELETE'])
 @cross_origin()
 def delete_usuario():
     return jsonify(model.delete_usuario(request.json['dni']))
@@ -133,3 +135,4 @@ def login():
     usuario=model.login(data_dni,data_passw)
     return jsonify(usuario)
   
+app.register_blueprint(usuario_blueprint, url_prefix='/usuarios')

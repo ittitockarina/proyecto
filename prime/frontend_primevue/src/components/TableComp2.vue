@@ -34,6 +34,12 @@
         <label>DNI</label>
       </span>
       <br>
+      <span class="p-float-label">
+        <Textarea v-model="newUser.id_tipo_usuario" rows="1" cols="30" />
+        <!-- <input v-model="newUser.id_tipo_usuario" type="text"> -->
+        <label>Tipo Usuario</label>
+      </span>
+      <br>      
       <span class="p-float-label custom-password">
         <Password v-model="newUser.passw" inputId="password" toggleMask />
         <label for="password">Password</label>
@@ -51,12 +57,8 @@
       <Column field="nombre" sortable header="Nombre" :editable="true"></Column>
       <Column field="apellido" sortable header="Apellido" :editable="true"></Column>
       <Column field="email" header="Correo" :editable="true"></Column>
-      <!-- Boton Editar -->
-      <Column header="Editar">
-        <template #body="rowData">
-          <Button label="Editar" severity="info" @click="editRow(rowData)"></Button>
-        </template>
-      </Column>
+      <Column field="tipo_usuario" header="Tipo usuario" :editable="true"></Column>
+     
       <!-- Boton Eliminar -->
       <Column header="Eliminar">
         <template #body="rowData">
@@ -64,6 +66,39 @@
         </template>
       </Column>
     </DataTable>
+
+    <Dialog v-model:visible="visible" header="Header" :style="{ width: '50vw' }" :position="position" :modal="true" :draggable="false">
+      <p class="m-0">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </p>
+      <template #footer>
+        <Button label="No" icon="pi pi-times" @click="visible = false" text />
+        <Button label="Yes" icon="pi pi-check" @click="visible = false" autofocus />
+      </template>
+    </Dialog>
+
+    <!-- Formulario de toma de asistencia -->
+    <Panel :value="asistencia" class="custom-panel">
+      <template #header>
+        <div class="header-wrapper">
+          <span class="header-text">Tomar asistencia</span>
+        </div>
+      </template>
+
+      <!-- Campos para ingresar los datos de la asistencia -->
+      <div>
+        <label>Foto: </label>
+        <input type="file" id="fotoAsistencia" ref="fileInputAsistencia" accept="image/*" required>
+      </div>
+      <br>
+      <span class="p-float-label">
+        <Textarea v-model="asistencia.dni" rows="1" cols="30" />
+        <label>DNI</label>
+      </span>
+      <br>
+      <Button type="button" label="Tomar asistencia" icon="pi pi-check" :loading="loadingAsistencia" @click="tomarAsistencia" />
+    </Panel>
   </div>
 </template>
 
@@ -75,6 +110,7 @@ export default {
     return {
       usuario: [],
       newUser: {},
+      asistencia: {},
       postURL: 'http://127.0.0.1:5000',
     };
   },
@@ -90,23 +126,13 @@ export default {
       });
   },
   methods: {
-    editRow(rowData) {
-      if (rowData && rowData.data && rowData.data.dni && rowData.data.nombre && rowData.data.apellido && rowData.data.email) {
-        // Deshabilitar la edición en todas las filas
-        this.usuario.forEach((user) => {
-          user.editable = false;
-        });
-        // Habilitar la edición solo en la fila seleccionada
-        rowData.data.editable = true;
-      }
-    },
     deleteRow(rowData) {
       if (rowData) {
         const dni = rowData.data.dni;
         const confirmation = confirm('¿Estás seguro de que deseas eliminar esta fila?');
         if (confirmation) {
           axios
-            .delete(`${this.postURL}/usuarios`, { data: { dni } })
+            .delete(`${this.postURL}/delete_usuario`, { data: { dni: dni } }) // Pasar el parámetro dni correctamente
             .then((res) => {
               console.log(res);
               this.usuario = this.usuario.filter((user) => user.dni !== dni);
@@ -126,51 +152,72 @@ export default {
         formData.append('nombre', JSON.stringify(this.newUser.nombre));
         formData.append('apellido', JSON.stringify(this.newUser.apellido));
         formData.append('email', JSON.stringify(this.newUser.email));
+        formData.append('id_tipo_usuario', this.newUser.id_tipo_usuario); // Agrega el campo id_tipo_usuario
         formData.append('file', this.$refs.fileInput.files[0]);
 
         // Realizar la llamada a la API para guardar el nuevo usuario y la imagen
         axios
-          .put(`${this.postURL}/usuario`, formData)
+          .post(`${this.postURL}/add_usuario`, formData)
           .then((res) => {
             console.log(res);
-            this.usuario.push(this.newUser); // Agregar el nuevo usuario al arreglo
-            this.newUser = {}; // Limpiar los campos del nuevo usuario
+            // Agregar el nuevo usuario a la lista actualizada
+            this.usuario.push(res.data);
+            // Limpiar los campos del formulario
+            this.newUser = {};
+            this.$refs.fileInput.value = '';
           })
           .catch((error) => {
             console.log(error);
           });
       }
     },
+    tomarAsistencia() {
+      const formData = new FormData();
+      formData.append('dni', JSON.stringify(this.asistencia.dni));
+      formData.append('file', this.$refs.fileInputAsistencia.files[0]);
 
-    validarDatosUsuario(usuario) {
-      // Implementa la lógica de validación de los datos del usuario
-      // Puedes agregar validaciones adicionales según tus requisitos
-      if (!usuario.nombre || !usuario.apellido || !usuario.email || !usuario.dni || !usuario.passw) {
-        alert('Por favor, complete todos los campos');
+      // Realizar la llamada a la API para tomar la asistencia y guardar la imagen
+      axios
+        .post(`${this.postURL}/tomar_asistencia`, formData)
+        .then((res) => {
+          console.log(res);
+          // Limpiar los campos del formulario
+          this.asistencia = {};
+          this.$refs.fileInputAsistencia.value = '';
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    validarDatosUsuario(user) {
+      // Realizar validaciones de los campos del usuario
+      if (!user.nombre || !user.apellido || !user.email || !user.dni || !user.passw || !user.id_tipo_usuario) {
+        alert('Por favor, completa todos los campos');
         return false;
       }
+
+      // Otras validaciones si es necesario
+
       return true;
-    }
+    },
   },
 };
 </script>
 
-<style>
+<style scoped>
 .custom-panel {
-  width: 400px; /* Ajusta el ancho según tus necesidades */
-  margin: auto;
+  margin-bottom: 1rem;
 }
-
 .header-wrapper {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
 .header-text {
   font-size: 1.5rem;
   font-weight: bold;
 }
-
-.custom-password input {
-  width: 356px; /* Ajusta el ancho según tus necesidades */
+.custom-password {
+  margin-bottom: 1rem;
 }
 </style>

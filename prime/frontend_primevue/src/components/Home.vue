@@ -1,21 +1,21 @@
 <template>
   <div v-if="isUserLoggedIn">
     <div class="card flex justify-content-center">
-      <Button type="button" label="abrir menu" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu" />
-      <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
+
+      
     </div>
     <TableComp v-if="isUserLoggedIn" />
   </div>
   <div v-else class="card flex justify-content-center">
     <form @submit="onSubmit" class="cart flex flex-column align-items-center gap-3 p-fluid">
       <div class="field">
-        <InputNumber :useGrouping="false" placeholder="Introduce tu DNI" id="DNI" v-model="DNIInput" />
+        <input type="number" class="form-control" placeholder="Introduce tu DNI" id="DNI" v-model="DNIInput" />
       </div>
       <div class="field">
-        <Password placeholder="Introduce tu password" id="password" v-model="passwordInput" />
+        <input type="password" class="form-control" placeholder="Introduce tu password" id="password" v-model="passwordInput" />
       </div>
-      <small class="p-error" id="text-error">{{ errorMessage || '&nbsp;' }}</small>
-      <Button type="submit" label="Submit" />
+      <small class="text-danger" id="text-error">{{ errorMessage || '&nbsp;' }}</small>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
 </template>
@@ -24,54 +24,61 @@
 import TableComp from './TableComp.vue';
 import axios from 'axios';
 import { ref } from 'vue';
-import { Toast } from 'primevue/toast';
+import { useRouter } from 'vue-router';
 
 const menu = ref(null);
-
-
-
-function getUser() {
-  return localStorage.getItem('user');
-}
 
 export default {
   name: 'Home',
   components: {
     TableComp,
-    Toast,
   },
   data() {
     return {
-      isUserLoggedIn: getUser(),
+      isUserLoggedIn: localStorage.getItem('user'),
       DNIInput: '',
       passwordInput: '',
       postURL: 'http://127.0.0.1:5000',
+      errorMessage: '',
     };
   },
   methods: {
-    toggle(e) {
-      menu.value.toggle(e);
+    toggle() {
+      menu.value.classList.toggle('show');
     },
-    onSubmit(e) {
-      e.preventDefault();
+    onSubmit(event) {
+      event.preventDefault();
       if (!this.DNIInput || !this.passwordInput) {
-        alert('Datos inválidos');
+        this.errorMessage = 'Datos inválidos';
       } else {
         axios
-          .post(this.postURL + '/login', {
+          .post(`${this.postURL}/login`, {
             DNI: this.DNIInput,
             password: this.passwordInput,
           })
-          .then((res) => {
-            if (res.data.length) {
-              localStorage.setItem('user', JSON.stringify(res.data[0]));
+          .then((response) => {
+            if (response.data.length) {
+              localStorage.setItem('user', JSON.stringify(response.data[0]));
               this.isUserLoggedIn = true;
+
+              const tipoUsuario = response.data[0].tipo_usuario;
+              const router = useRouter();
+              if (tipoUsuario === 'alumno') {
+                router.push({ name: 'Alumnos' });
+              } else if (tipoUsuario === 'admin') {
+                router.push({ name: 'Admin' });
+              } else if (tipoUsuario === 'docente') {
+                router.push({ name: 'Docente' });
+              } else {
+                // Otros casos según los tipos de usuario
+              }
             } else {
-              alert('Credenciales incorrectas');
+              this.errorMessage = 'Credenciales incorrectas';
             }
           })
           .catch((error) => {
-            alert(error);
+            console.log(error);
+            this.errorMessage = 'Error al iniciar sesión';
           });
       }
     },
