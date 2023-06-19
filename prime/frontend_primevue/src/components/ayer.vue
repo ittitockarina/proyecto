@@ -58,7 +58,12 @@
       <Column field="apellido" sortable header="Apellido" :editable="true"></Column>
       <Column field="email" header="Correo" :editable="true"></Column>
       <Column field="tipo_usuario" header="Tipo usuario" :editable="true"></Column>
-     
+          <!-- Boton Editar -->
+      <Column header="Editar">
+        <template #body="rowData">
+          <Button label="Actualizar" icon="pi pi-arrow-down" @click="openPosition('top', rowData)" severity="warning" style="min-width: 10rem"></Button>
+        </template>
+      </Column>
       <!-- Boton Eliminar -->
       <Column header="Eliminar">
         <template #body="rowData">
@@ -67,14 +72,50 @@
       </Column>
     </DataTable>
 
-    <Dialog v-model:visible="visible" header="Header" :style="{ width: '50vw' }" :position="position" :modal="true" :draggable="false">
-      <p class="m-0">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
+    <Dialog v-model:visible="visible" header="Actualizar Usuario" :style="{ width: '30vw' }" :position="position" :modal="true" :draggable="false">
+      <label>Nombre</label>
+      <br>
+      <span class="p-float-label custom-textarea">
+      <Textarea v-model="newUser.nombrep" autoResize rows="1" cols="30" />
+      </span>
+      <br>
+      <span class="p-float-label custom-textarea">
+      <label>Apellido</label>
+      </span>
+      <br>
+      <span class="p-float-label custom-textarea">
+      <Textarea v-model="newUser.apellidop" autoResize rows="1" cols="30" />
+      </span>
+      <br>
+      <span class="p-float-label custom-textarea">
+      <label>Email</label>
+      </span>
+      <br>
+      <span class="p-float-label custom-textarea">
+      <Textarea v-model="newUser.emailp" autoResize rows="1" cols="30" />
+      </span>
+      <br>
+      <label>DNI</label>
+      <br>
+      <span class="p-float-label custom-textarea">
+      <Textarea v-model="newUser.dnip" autoResize rows="1" cols="30" />
+      </span>
+      <br>
+      <label>ID Tipo de usuario</label>
+      <br>
+      <span class="p-float-label custom-textarea">
+      <Textarea v-model="newUser.id_tipo_usuariop" autoResize rows="1" cols="30" />
+      </span>
+      <br>
+      <label>Password</label>
+      <br>
+      <span class="p-float-label custom-password">
+        <Password v-model="newUser.passwp" toggleMask />
+      </span>
+      <br>
       <template #footer>
-        <Button label="No" icon="pi pi-times" @click="visible = false" text />
-        <Button label="Yes" icon="pi pi-check" @click="visible = false" autofocus />
+        <Button label="Aceptar" icon="pi pi-check" @click="editRow(); visible = false" autofocus />
+        <Button label="Cancelar" icon="pi pi-times" @click="visible = false" text />
       </template>
     </Dialog>
 
@@ -126,6 +167,49 @@ export default {
       });
   },
   methods: {
+    editRow() {
+      if (this.newUser && this.newUser.dnip && this.newUser.nombrep && this.newUser.apellidop && this.newUser.emailp && this.newUser.id_tipo_usuariop) {
+        // Deshabilitar la edición en todas las filas
+        this.usuario.forEach((user) => {
+          user.editable = false;
+        });
+
+        // Realizar la solicitud PATCH al backend
+        console.log("wars");
+        console.log(this.newUser.id_usuario);
+        console.log(this.newUser.id_tipo_usuariop);
+        console.log(this.newUser.dnip);
+        console.log(this.newUser.passwp);
+        console.log(this.newUser.nombrep);
+        console.log(this.newUser.apellidop);
+        console.log(this.newUser.emailp);
+        console.log("peaces");
+        const formData = new FormData();
+        formData.append('id_usuario', JSON.stringify(this.newUser.id_usuario));
+        formData.append('id_tipo_usuario', JSON.stringify(this.newUser.id_tipo_usuariop));
+        formData.append('dni', JSON.stringify(this.newUser.dnip));
+        formData.append('passw', JSON.stringify(this.newUser.passwp));
+        formData.append('nombre', JSON.stringify(this.newUser.nombrep));
+        formData.append('apellido', JSON.stringify(this.newUser.apellidop));
+        formData.append('email', JSON.stringify(this.newUser.emailp));
+
+        axios
+          .patch(`${this.postURL}/update_usuario`, formData)
+          .then((res) => {
+            console.log(res.data);
+
+            // Cerrar el Dialog
+            this.visible = false;
+
+            // Actualizar los datos de la tabla
+            this.cargarUsuarios();
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+
     deleteRow(rowData) {
       if (rowData) {
         const dni = rowData.data.dni;
@@ -199,6 +283,19 @@ export default {
       // Otras validaciones si es necesario
 
       return true;
+    },
+    openPosition(position, rowData) {
+      this.position = position;
+      this.visible = true;
+
+      // Asignar los valores de rowData a newUser
+      this.newUser.id_usuario = rowData.data.id_usuario;
+      this.newUser.id_tipo_usuariop = rowData.data.id_tipo_usuario;
+      this.newUser.nombrep = rowData.data.nombre;
+      this.newUser.apellidop = rowData.data.apellido;
+      this.newUser.emailp = rowData.data.email;
+      this.newUser.dnip = rowData.data.dni;
+      this.newUser.passwp = rowData.data.passw;
     },
   },
 };

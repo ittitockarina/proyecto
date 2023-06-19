@@ -4,7 +4,7 @@
 
       
     </div>
-    <TableComp v-if="isUserLoggedIn" />
+    <UsuarioComp v-if="isUserLoggedIn" />
   </div>
   <div v-else class="card flex justify-content-center">
     <form @submit="onSubmit" class="cart flex flex-column align-items-center gap-3 p-fluid">
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import TableComp from './TableComp.vue';
+import UsuarioComp from './UsuarioComp.vue';
 import axios from 'axios';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -31,7 +31,7 @@ const menu = ref(null);
 export default {
   name: 'Home',
   components: {
-    TableComp,
+    UsuarioComp,
   },
   data() {
     return {

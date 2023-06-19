@@ -14,37 +14,38 @@ import numpy as np
 import requests
 
 from metodos_temp import MetodosTemp
-from backend.models.tipo_usuario_model import TipoUsuarioModel
-model = TipoUsuarioModel()
+from backend.models.tipo_usuario_model import TipoUserModel
+model = TipoUserModel()
 
-tipo_usuario_blueprint = Blueprint('tipo_usuario', __name__)
+tipo_usuario_blueprint  = Blueprint('tipo_usuario_blueprint', __name__)
 
-@tipo_usuario_blueprint.route('/tipo_usuario', methods=['PUT'])
+
+@tipo_usuario_blueprint.route('/tipouser', methods=['PUT'])
 @cross_origin()
-def crear_tipo_usuario():
-    content = model.crear_tipo_usuario(request.json['tipo_usuario'])    
+def crear_tipo_user():
+    content = model.crear_tipo_user(request.json['tipo_usuario'])    
     return jsonify(content)
 
-@tipo_usuario_blueprint.route('/tipo_usuario', methods=['PATCH'])
+@tipo_usuario_blueprint.route('/tipouser', methods=['PATCH'])
 @cross_origin()
-def update_tipo_usuario():
-    content = model.update_tipo_usuario(request.json['id_tipo_usuario'], request.json['tipo_usuario'])    
+def update_tipo_user():
+    content = model.update_tipo_user(request.json['id_tipo_usuario'], request.json['tipo_usuario'])    
     return jsonify(content)
 
-@tipo_usuario_blueprint.route('/tipo_usuario', methods=['DELETE'])
+@tipo_usuario_blueprint.route('/tipouser', methods=['DELETE'])
 @cross_origin()
-def delete_tipo_usuario():
-    return jsonify(model.delete_tipo_usuario(int(request.json['id_tipo_usuario'])))
+def delete_tipo_user():
+    return jsonify(model.delete_tipo_user(int(request.json['id_tipo_usuario'])))
 
-@tipo_usuario_blueprint.route('/tipo_usuario', methods=['POST'])
+@tipo_usuario_blueprint.route('/tipouser', methods=['POST'])
 @cross_origin()
-def get_tipo_usuario():
-    return jsonify(model.get_tipo_usuario(int(request.json['id_tipo_usuario'])))
+def get_tipo_user():
+    return jsonify(model.get_tipo_user(int(request.json['id_tipo_usuario'])))
 
-@tipo_usuario_blueprint.route('/tipo_usuarios', methods=['POST'])
+@tipo_usuario_blueprint.route('/tipousers', methods=['POST'])
 @cross_origin()
-def get_tipos_usuario():
-    return jsonify(model.get_tipos_usuario())
+def get_tipo_users():
+    return jsonify(model.get_tipo_users())
 
 
 
