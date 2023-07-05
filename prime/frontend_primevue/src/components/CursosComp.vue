@@ -16,27 +16,28 @@
         </span>
         <br>
 
-        <Button type="button" label="Guardar" icon="pi pi-check" :loading="loading" @click="guardarnewCurso" />
+        <Button type="button"  icon="pi pi-save" :loading="loading" @click="guardarnewCurso" />
       </Panel>
       <br>
       <br>
       <br>
       <!-- Tabla de cursos -->
-      <DataTable :value="curso" :editable="true" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem">
+      <DataTable :value="curso" :editable="true" paginator :rows="5" :rowsPerPageOptions="[1, 5, 10, 50]" tableStyle="min-width: 50rem">
         <!-- Columnas -->
         <Column field="nombre_curso" header="Nombre" sortable :editable="true"></Column>
         <!-- Boton Editar -->
-        <Column header="Editar">
+        <Column header="Acciones">
           <template #body="rowData">
-            <Button label="Actualizar" icon="pi pi-arrow-down" @click="openPosition('top', rowData)" severity="warning" style="min-width: 10rem"></Button>
+            <Button  icon="pi pi-pencil" @click="openPosition('top', rowData)" severity="warning" ></Button>
+            <Button  icon="pi pi-trash"  severity="info" @click="deleteRow(rowData)"></Button>
           </template>
         </Column>
         <!-- Boton Eliminar -->
-        <Column header="Eliminar">
+      <!--   <Column header="Eliminar">
          <template #body="rowData">
-            <Button label="Eliminar" severity="info" @click="deleteRow(rowData)"></Button>
+            <Button  icon="pi pi-trash"  severity="info" @click="deleteRow(rowData)"></Button>
           </template>
-        </Column>
+        </Column> -->
       </DataTable>
   
       <Dialog v-model:visible="visible" header="Actualizar curso" :style="{ width: '30vw' }" :position="position" :modal="true" :draggable="false">
@@ -179,8 +180,8 @@
         return true;
       },
       openPosition(position, rowData) {
-  this.position = position;
-  this.visible = true;
+        this.position = position;
+        this.visible = true;
 
   // Asignar los valores de rowData a newCurso
   this.newCurso = {

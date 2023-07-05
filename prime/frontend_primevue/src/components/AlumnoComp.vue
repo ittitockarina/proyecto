@@ -26,7 +26,7 @@
         </span>
         <br>
 
-        <Button type="button" label="Guardar" icon="pi pi-check" :loading="loading" @click="guardarnewAlumno" />
+        <Button type="button" icon="pi pi-save" :loading="loading" @click="guardarnewAlumno" />
       </Panel>
       <br>
       <br>
@@ -38,17 +38,19 @@
         <Column field="alumno_year" header="Year de nacimiento" sortable :editable="true"></Column>
         <Column field="alumno_regular" header="Activo" sortable :editable="true"></Column>
         <!-- Boton Editar -->
-        <Column header="Editar">
+        <Column header="Acciones">
           <template #body="rowData">
-            <Button label="Actualizar" icon="pi pi-arrow-down" @click="openPosition('top', rowData)" severity="warning" style="min-width: 10rem"></Button>
+            <Button  icon="pi pi-pencil" @click="openPosition('top', rowData)" severity="warning" ></Button>
+            <Button icon="pi pi-trash" severity="info" @click="deleteRow(rowData)"></Button>
+
           </template>
         </Column>
         <!-- Boton Eliminar -->
-        <Column header="Eliminar">
+        <!-- <Column header="Eliminar">
          <template #body="rowData">
             <Button label="Eliminar" severity="info" @click="deleteRow(rowData)"></Button>
           </template>
-        </Column>
+        </Column> -->
       </DataTable>
   
       <Dialog v-model:visible="visible" header="Actualizar alumno" :style="{ width: '30vw' }" :position="position" :modal="true" :draggable="false">

@@ -43,6 +43,9 @@ class UsuarioModel:
         data['id_usuario'] = cursor.lastrowid
         return data
 
+
+
+
     def update_usuario(self,id_usuario,id_tipo_usuario, dni, passw,nombre,apellido,email):    
         data = {
             'id_usuario' : id_usuario,
@@ -67,3 +70,48 @@ class UsuarioModel:
 
         result = {'result': 1}
         return result 
+    
+    
+    def login(self, DNI, password):
+        query = """
+            SELECT usuario.id_usuario, usuario.dni, usuario.passw, usuario.foto, usuario.vector,
+                usuario.nombre, usuario.apellido, usuario.email, tipo_usuario.tipo_usuario
+            FROM usuario
+            INNER JOIN tipo_usuario ON usuario.id_tipo_usuario = tipo_usuario.id_tipo_usuario
+            WHERE usuario.dni = %(DNI)s AND usuario.passw = %(password)s
+        """
+
+        params = {
+            'DNI': str(DNI),
+            'password': str(password)
+        }
+        rv = self.mysql_pool.execute(query, params)
+        data = []
+        for result in rv:
+            content = {
+                'id_usuario': result[0],
+                'dni': result[1],
+                'passw': result[2],
+                'foto': result[3],
+                'vector': result[4],
+                'nombre': result[5],
+                'apellido': result[6],
+                'email': result[7],
+                'tipo_usuario': result[8]
+            }
+            data.append(content)
+        return data
+    def agregar_participacion_alumno(self, id_alumno, cantidad_participaciones):
+        query = """
+            UPDATE participacion
+            SET cantidad = cantidad + %(cantidad_participaciones)s
+            WHERE id_alumno = %(id_alumno)s
+        """
+        data = {
+            'id_alumno': id_alumno,
+            'cantidad_participaciones': cantidad_participaciones
+        }
+        self.mysql_pool.execute(query, data, commit=True)
+    
+   
+   

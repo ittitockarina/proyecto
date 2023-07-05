@@ -5,17 +5,18 @@ from flask import jsonify
 from werkzeug.utils import secure_filename
 import json
 import os  
-from flask_cors import CORS, cross_origin
-
-app = Flask(__name__)
-CORS(app, origins="http://localhost:8080")
-#cors = CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080"}})
-
-# Configuración de la carpeta de carga de archivos
-# app.config['UPLOAD_FOLDER'] = '/home/karolyto/Documentos/2023/softare_construction/proyecto/backend/img'
-
 import numpy as np
 import requests
+from flask_cors import CORS, cross_origin
+from werkzeug.utils import secure_filename
+
+from flask import render_template
+from flask import redirect
+from flask import url_for
+
+app = Flask(__name__)
+CORS(app, origins="http://localhost:8081")
+
 
 from metodos_temp import MetodosTemp
 from backend.models.usuario_model import UsuarioModel
@@ -24,7 +25,25 @@ model=UsuarioModel()
 model = UsuarioModel()
 
 usuario_blueprint = Blueprint('usuario_blueprint', __name__)
-CORS(usuario_blueprint, origins="http://localhost:8080") 
+CORS(usuario_blueprint, origins="http://localhost:8081") 
+def create_usuario(self, id_tipo_usuario, dni,passw,foto,vector,nombre,apellido,email):    
+        data = {
+            'id_tipo_usuario' : id_tipo_usuario,
+            'dni' : dni,
+            'passw' : passw,
+            'foto' : foto,
+            'vector' : vector,
+            'nombre' : nombre,
+            'apellido' : apellido,
+            'email' : email
+        }  
+        query = """insert into usuario (id_tipo_usuario,dni, passw,foto,vector,nombre,apellido,email) 
+            values (%(id_tipo_usuario)s,%(dni)s, %(passw)s,%(foto)s,%(vector)s, %(nombre)s, %(apellido)s, %(email)s)"""    
+        cursor = self.mysql_pool.execute(query, data, commit=True)   
+
+        data['id_usuario'] = cursor.lastrowid
+        return data
+
 
 @usuario_blueprint.route('/usuario', methods=['PUT'])
 @cross_origin()
@@ -120,5 +139,24 @@ def get_usuario():
 @cross_origin()
 def get_usuarios():
     return jsonify(model.get_usuarios())
+
+""" @usuario_blueprint.route('/login', methods=['POST'])
+@cross_origin()
+def login():
+    global model
+    data_dni = request.json['DNI']
+    data_passw = request.json['password']
+    usuario=model.login(data_dni,data_passw)
+    return jsonify(usuario)
+ """
+@usuario_blueprint.route('/login', methods=['POST'])
+@cross_origin()
+def login():
+    global model
+    data_dni = request.json['DNI']
+    data_passw = request.json['password']
+    usuario = model.login(data_dni, data_passw)
+    return jsonify(usuario)
+
 
 app.register_blueprint(usuario_blueprint, url_prefix='/usuarios')

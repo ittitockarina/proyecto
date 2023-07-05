@@ -60,3 +60,39 @@ class AlumnosModel:
 
         result = {'result': 1}
         return result 
+    
+    def datos_alumno(self, id_alumno):
+        params = {'id_alumno': id_alumno}
+        query = """
+        SELECT a.id_alumno, u.nombre, u.apellido, c.nombre_curso, p.cantidad
+        FROM alumno a
+        JOIN usuario u ON a.id_usuario = u.id_usuario
+        JOIN matricula m ON a.id_alumno = m.id_alumno
+        JOIN grupo g ON m.id_grupo = g.id_grupo
+        JOIN curso c ON g.id_curso = c.id_curso
+        LEFT JOIN participacion p ON a.id_alumno = p.id_alumno
+        WHERE a.id_alumno = %(id_alumno)s
+        """
+        rv = self.PostgreSQL_Pool.execute(query, params)
+        data = []
+        content = {}
+        for result in rv:
+            content = {
+                'id_alumno': result[0],
+                'nombre': result[1],
+                'apellido': result[2],
+                'nombre_curso': result[3],
+                'cantidad_participaciones': result[4]
+            }
+            data.append(content)
+            content = {}
+        return data
+    
+""" @alumnos_blueprint.route('/datos', methods=['POST'])
+@cross_origin()
+def datos_alumno():
+    id_alumno = int(request.json['id_alumno'])
+    datos_alumno = model.datos_alumno(id_alumno)
+    return jsonify(datos_alumno)  """
+
+

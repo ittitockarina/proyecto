@@ -1,18 +1,16 @@
 import { createApp } from 'vue';
-
 import App from './App.vue';
-///////////////////////////
-import { createRouter, createWebHistory } from 'vue-router';
-///////////////////////////////
 
-// Importar PrimeVue y los estilos necesarios
+import { createRouter, createWebHistory } from 'vue-router'; 
+import Vue from 'vue';
+
+
 import PrimeVue from 'primevue/config';
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
-import "primevue/resources/themes/lara-light-indigo/theme.css"; 
+import "primevue/resources/themes/lara-light-indigo/theme.css";
 
-// Importar los componentes específicos de PrimeVue que necesites
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -23,7 +21,7 @@ import Textarea from 'primevue/textarea';
 import FileUpload from 'primevue/fileupload';
 import Menu from 'primevue/menu';
 import Password from 'primevue/password';
-import ToastService from 'primevue/toastservice'; // Importar el servicio Toast
+import ToastService from 'primevue/toastservice';
 import PanelMenu from 'primevue/panelmenu';
 import TieredMenu from 'primevue/tieredmenu';
 import Dock from 'primevue/dock';
@@ -32,32 +30,60 @@ import Dialog from 'primevue/dialog';
 import Calendar from 'primevue/calendar';
 import InputSwitch from 'primevue/inputswitch';
 
-///////////////////////////////////////77
-import AsistenciaComp from './components/AsistenciaComp.vue';
-import DocenteComp from './components/DocenteComp.vue';
+//componentes inicio de sesion
+import AdminLogin from './components/AdminLogin.vue';
+import AlumnoLogin from './components/AlumnoLogin.vue';
+import DocenteLogin from './components/DocenteLogin.vue';
+//  componentes que se utilizarán en las rutas
+import tomarAsistencia from './components/tomarAsistencia.vue';
+import CursosComp from './components/CursosComp.vue';
+import GrupoComp from './components/GrupoComp.vue';
+import ParticipacionComp from './components/ParticipacionComp.vue';
 import AlumnoComp from './components/AlumnoComp.vue';
-
-/////////////////////////////////////////
-
-
+import DocenteComp from './components/DocenteComp.vue';
+import HorarioComp from './components/HorarioComp.vue';
+import AsistenciaComp from './components/AsistenciaComp.vue';
+import MatriculaComp from './components/MatriculaComp.vue';
+import JustificacionComp from './components/JustificacionComp.vue';
+import TipoUserComp from './components/TipoUserComp.vue';
+import UsuarioComp from './components/UsuarioComp.vue';
+import vistaParticipa from './components/vistaParticipa.vue';
 
 const app = createApp(App);
-////////////////////////////////////
-const router = createRouter({
-    history: createWebHistory(),
-    routes: [
-      { path: '/admin', name: 'Admin', component: AsistenciaComp },
-      { path: '/docente', name: 'Docente', component: DocenteComp },
-      { path: '/estudiante', name: 'Alumnos', component: AlumnoComp },
-    ],
-  });
-///////////////////////////////////
 
-// Usar PrimeVue y el servicio Toast en la aplicación
+
+// componentes correspondientes
+const routes = [
+  { path: '/Admin', component: AdminLogin },
+  { path: '/Alumnos', component: AlumnoLogin },
+  { path: '/Docentes', component: DocenteLogin },
+  ///////////////////////////
+  { path: '/tomar-asistencia', component: tomarAsistencia },
+  { path: '/cursos', component: CursosComp },
+  { path: '/grupo', component: GrupoComp },
+  { path: '/participacion', component: ParticipacionComp },
+  { path: '/alumno', component: AlumnoComp },
+  { path: '/docente', component: DocenteComp },
+  { path: '/horario', component: HorarioComp },
+  { path: '/asistencia', component: AsistenciaComp },
+  { path: '/matricula', component: MatriculaComp },
+  { path: '/justificacion', component: JustificacionComp },
+  { path: '/tipo-usuario', component: TipoUserComp },
+  { path: '/usuario', component: UsuarioComp },
+  { path: '/vistaParticipa', component: vistaParticipa },
+  
+];
+
+const router = createRouter({
+  history: createWebHistory('/'),
+  routes
+});
+
+
 app.use(ToastService);
 app.use(PrimeVue);
+app.use(router);
 
-// Registrar los componentes específicos de PrimeVue que necesites
 app.component('Button', Button);
 app.component('DataTable', DataTable);
 app.component('Column', Column);
@@ -72,8 +98,11 @@ app.component('PanelMenu', PanelMenu);
 app.component('TieredMenu', TieredMenu);
 app.component('Dock', Dock);
 app.component('TabMenu', TabMenu);
-app.component('Dialog',Dialog)
-app.component('Calendar',Calendar);
-app.component('InputSwitch',InputSwitch);
+app.component('Dialog', Dialog);
+app.component('Calendar', Calendar);
+app.component('InputSwitch', InputSwitch);
+
+
+
 
 app.mount('#app');

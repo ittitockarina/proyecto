@@ -26,7 +26,7 @@
         </span>
         <br>
 
-        <Button type="button" label="Guardar" icon="pi pi-check" :loading="loading" @click="guardarnewGrupo" />
+        <Button type="button" icon="pi pi-save" :loading="loading" @click="guardarnewGrupo" />
       </Panel>
       <br>
       <br>
@@ -37,18 +37,14 @@
         <Column field="id_curso" header="ID Curso" sortable :editable="true"></Column>
         <Column field="nombre_grupo" header="Nombre" sortable :editable="true"></Column>
         <Column field="aula" header="Aula" sortable :editable="true"></Column>
-        <!-- Boton Editar -->
-        <Column header="Editar">
+        <!-- Boton acciones -->
+        <Column header="Acciones">
           <template #body="rowData">
-            <Button label="Actualizar" icon="pi pi-arrow-down" @click="openPosition('top', rowData)" severity="warning" style="min-width: 10rem"></Button>
+            <Button  icon="pi pi-pencil" @click="openPosition('top', rowData)" severity="warning" ></Button>
+            <Button  icon="pi pi-trash" severity="info" @click="deleteRow(rowData)"></Button>
           </template>
         </Column>
-        <!-- Boton Eliminar -->
-        <Column header="Eliminar">
-         <template #body="rowData">
-            <Button label="Eliminar" severity="info" @click="deleteRow(rowData)"></Button>
-          </template>
-        </Column>
+       
       </DataTable>
   
       <Dialog v-model:visible="visible" header="Actualizar grupo" :style="{ width: '30vw' }" :position="position" :modal="true" :draggable="false">

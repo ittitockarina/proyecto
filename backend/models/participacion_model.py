@@ -59,3 +59,32 @@ class ParticipacionModel:
 
         result = {'result': 1}
         return result 
+    
+    def aumentar_participaciones(self, id_alumno, cantidad):
+        data = {
+            'id_alumno': id_alumno,
+            'cantidad': cantidad
+        }
+        query = """
+            UPDATE participacion
+            SET cantidad = cantidad + %(cantidad)s
+            WHERE id_alumno = %(id_alumno)s
+        """
+        cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
+        result = {'result':1} 
+        return result
+
+    def quitar_participaciones(self, id_alumno, cantidad):
+        data = {
+            'id_alumno': id_alumno,
+            'cantidad': cantidad
+        }
+
+        query = """
+            UPDATE participacion
+            SET cantidad = cantidad - %(cantidad)s
+            WHERE id_alumno = %(id_alumno)s
+        """
+        cursor = self.PostgreSQL_Pool.execute(query, data, commit=True)   
+        result = {'result':1} 
+        return result

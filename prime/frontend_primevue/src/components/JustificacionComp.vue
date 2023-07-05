@@ -26,7 +26,7 @@
         </span>
         <br>
 
-        <Button type="button" label="Guardar" icon="pi pi-check" :loading="loading" @click="guardarnewJustificacion" />
+        <Button type="button" icon="pi pi-save" :loading="loading" @click="guardarnewJustificacion" />
       </Panel>
       <br>
       <br>

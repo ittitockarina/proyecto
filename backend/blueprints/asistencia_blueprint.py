@@ -12,7 +12,7 @@ model=AsistenciaModel()
 
 
 asistencia_blueprint = Blueprint('asistencia_blueprint', __name__)
-
+CORS(asistencia_blueprint) 
 
 @asistencia_blueprint.route('/asistencia', methods=['PUT'])
 @cross_origin()
@@ -46,16 +46,111 @@ def get_asistencias():
 def tomar_asistencia():
     if request.method == 'POST':
         # File and JSON data
-        data_dni = json.loads(request.form.get('dni'))
-        f    = request.files['file']
+        data_dni = request.form.get('dni')
+        if data_dni is not None:
+            data_dni = json.loads(data_dni)
+        
+        f = request.files['file']
         path = MetodosTemp.savePathAsis(f)
         file1 = MetodosTemp.callOpenFaceAPI(path)
         vector2 = MetodosTemp.transformacion(file1)
         vector1 = model.get_vector(data_dni)
         vector1 = MetodosTemp.transformacion2(vector1)
-        comprobar = MetodosTemp.Euclides(vector1,vector2)
+        comprobar = MetodosTemp.Euclides(vector1, vector2)
         print(comprobar)
-        if comprobar < 0.5 :
-            return "la identidad es verdadera"
+        
+        if comprobar < 0.85:
+            return "La identidad es verdadera"
         else:
-            return "alumno no coincide"
+            return "El alumno no coincide"
+
+    #################################################
+@asistencia_blueprint.route('/asistencia_hoy', methods=['POST'])
+@cross_origin()
+def asistencia_hoy():
+    id_horario = request.json['id_horario']
+    id_alumno = request.json['id_alumno']
+
+    result = model.asistencia_hoy(id_horario, id_alumno)
+
+    if result is not None:
+        return jsonify(result)
+    else:
+        return jsonify({'error': 'No se encontraron datos para los parámetros proporcionados.'})
+
+@asistencia_blueprint.route('/asistencia_hoy', methods=['POST'])
+@cross_origin()
+def asistencia_hoy_route():
+    dni_alumno = request.json['dni_alumno']
+    hora = request.json['hora']
+
+    result = model.asistencia_hoy(dni_alumno, hora)
+
+    if result is not None:
+        return jsonify(result)
+    else:
+        return jsonify({'error': 'No se encontraron datos para los parámetros proporcionados.'})
+
+@asistencia_blueprint.route('/toma_asistencia', methods=['POST'])
+@cross_origin()
+def toma_asistencia():
+    if request.method == 'POST':
+        # File and JSON data
+        data_dni = request.form.get('dni')
+        if data_dni is not None:
+            data_dni = json.loads(data_dni)
+        
+        f = request.files['file']
+        path = MetodosTemp.savePathAsis(f)
+        file1 = MetodosTemp.callOpenFaceAPI(path)
+        vector2 = MetodosTemp.transformacion(file1)
+        vector1 = model.get_vector(data_dni)
+        vector1 = MetodosTemp.transformacion2(vector1)
+        
+        hora = request.form.get('hora')
+        
+        result = model.asistencia_valida(data_dni, hora)
+        
+        if result is not None:
+            comprobar = MetodosTemp.Euclides(vector1, vector2)
+            print(comprobar)
+
+            if comprobar < 0.85:
+                return "La identidad es verdadera"
+            else:
+                return "El alumno no coincide"
+        else:
+            return "Estás fuera del horario"
+
+
+@asistencia_blueprint.route('/toma', methods=['POST'])
+@cross_origin()
+def toma():
+    if request.method == 'POST':
+        # File and JSON data
+        data_dni = request.form.get('dni')
+        if data_dni is not None:
+            data_dni = json.loads(data_dni)
+
+        f = request.files['file']
+        path = MetodosTemp.savePathAsis(f)
+        file1 = MetodosTemp.callOpenFaceAPI(path)
+        vector2 = MetodosTemp.transformacion(file1)
+        vector1 = model.get_vector(data_dni)
+        vector1 = MetodosTemp.transformacion2(vector1)
+
+        fecha = request.form.get('fecha')  # Agregar captura de la fecha
+        hora = request.form.get('hora')  # Agregar captura de la hora
+
+        result = model.asistencia_va(data_dni, fecha, hora)  # Actualizar nombre de la función
+
+        if result is not None:
+            comprobar = MetodosTemp.Euclides(vector1, vector2)
+            print(comprobar)
+
+            if comprobar < 0.85:
+                return "La identidad es verdadera"
+            else:
+                return "El alumno no coincide"
+        else:
+            return "Estás fuera del horario"

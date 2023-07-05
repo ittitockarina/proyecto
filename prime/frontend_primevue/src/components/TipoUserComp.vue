@@ -16,7 +16,7 @@
         </span>
         <br>
 
-        <Button type="button" label="Guardar" icon="pi pi-check" :loading="loading" @click="guardarnewTipouser" />
+        <Button type="button"  icon="pi pi-save" :loading="loading" @click="guardarnewTipouser" />
       </Panel>
       <br>
       <br>
@@ -25,18 +25,14 @@
       <DataTable :value="tipouser" :editable="true" paginator :rows="5" :rowsPerPageOptions="[5, 10, 20, 50]" tableStyle="min-width: 50rem">
         <!-- Columnas -->
         <Column field="tipo_usuario" header="Tipo de usuario" sortable :editable="true"></Column>
-        <!-- Boton Editar -->
-        <Column header="Editar">
+        <!-- Boton Acciones -->
+        <Column header="Acciones">
           <template #body="rowData">
-            <Button label="Actualizar" icon="pi pi-arrow-down" @click="openPosition('top', rowData)" severity="warning" style="min-width: 10rem"></Button>
+            <Button  icon="pi pi-pencil" @click="openPosition('top', rowData)" severity="warning" ></Button>
+            <Button icon="pi pi-trash" severity="info" @click="deleteRow(rowData)"></Button>
           </template>
         </Column>
-        <!-- Boton Eliminar -->
-        <Column header="Eliminar">
-         <template #body="rowData">
-            <Button label="Eliminar" severity="info" @click="deleteRow(rowData)"></Button>
-          </template>
-        </Column>
+        
       </DataTable>
   
       <Dialog v-model:visible="visible" header="Actualizar Tipo de Usuario" :style="{ width: '30vw' }" :position="position" :modal="true" :draggable="false">
