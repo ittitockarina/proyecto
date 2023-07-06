@@ -1,4 +1,6 @@
 from backend.models.postgres_connection_pool import PostgreSQLPool
+from datetime import datetime
+from dateutil import parser
 #PostgreSQL_Pool
 class AsistenciaModel:
     def __init__(self):        
@@ -128,7 +130,18 @@ class AsistenciaModel:
         else:
             return None
 
-    def asistencia_va(self, dni_alumno, fecha, hora):
+    
+
+
+    def asistencia_validas(self, dni_alumno, hora):
+        if hora is None:
+            return None
+
+        # Eliminar offset de tiempo y zona horaria de la cadena
+        hora_sin_offset = hora.split(" GMT")[0]
+
+        formatted_hora = parser.parse(hora_sin_offset).strftime("%Y-%m-%d %H:%M:%S")
+
         query = """
             SELECT u.nombre, u.apellido, c.nombre_curso, g.aula, h.hora_inicio, h.hora_fin
             FROM horario h
@@ -138,12 +151,11 @@ class AsistenciaModel:
             JOIN curso c ON g.id_curso = c.id_curso
             JOIN usuario u ON al.id_usuario = u.id_usuario
             WHERE u.dni = %(dni_alumno)s
-            AND h.hora_inicio <= %(hora)s
-            AND h.hora_fin >= %(hora)s
-            AND DATE(h.hora_inicio) = %(fecha)s
+                AND h.hora_inicio <= %(hora)s
+                AND h.hora_fin >= %(hora)s
         """
+        cursor = self.PostgreSQL_Pool.execute(query, {'dni_alumno': dni_alumno, 'hora': formatted_hora})
 
-        cursor = self.PostgreSQL_Pool.execute(query, {'dni_alumno': dni_alumno, 'hora': hora, 'fecha': fecha})
         result = cursor.fetchone()
 
         if result:
@@ -159,35 +171,32 @@ class AsistenciaModel:
             return None
 
 
+    def todas_asistencias(self, id_horario):
+        query = """
+            SELECT c.nombre_curso, h.hora_inicio, h.hora_fin, g.nombre_grupo, u.nombre, u.apellido, a.presente
+            FROM horario h
+            JOIN grupo g ON h.id_grupo = g.id_grupo
+            JOIN curso c ON g.id_curso = c.id_curso
+            JOIN asistencia a ON h.id_horario = a.id_horario
+            JOIN alumno al ON a.id_alumno = al.id_alumno
+            JOIN usuario u ON al.id_usuario = u.id_usuario
+            WHERE h.id_horario = %(id_horario)s
+        """
+        cursor = self.PostgreSQL_Pool.execute(query, {'id_horario': id_horario})
 
+        results = cursor.fetchall()
 
-        """ @asistencia_blueprint.route('/toma_asistencia', methods=['POST'])
-        @cross_origin()
-        def toma_asistencia():
-            if request.method == 'POST':
-                # File and JSON data
-                data_dni = request.form.get('dni')
-                if data_dni is not None:
-                    data_dni = json.loads(data_dni)
-                
-                f = request.files['file']
-                path = MetodosTemp.savePathAsis(f)
-                file1 = MetodosTemp.callOpenFaceAPI(path)
-                vector2 = MetodosTemp.transformacion(file1)
-                vector1 = model.get_vector(data_dni)
-                vector1 = MetodosTemp.transformacion2(vector1)
-                
-                hora = request.form.get('hora')
-                
-                result = model.asistencia_hoy(data_dni, hora)
-                
-                if result is not None:
-                    comprobar = MetodosTemp.Euclides(vector1, vector2)
-                    print(comprobar)
+        asistencias = []
+        for result in results:
+            asistencias.append({
+                'nombre_curso': result[0],
+                'hora_inicio': result[1].strftime("%H:%M:%S"),
+                'hora_fin': result[2].strftime("%H:%M:%S"),
+                'nombre_grupo': result[3],
+                'nombre_alumno': result[4],
+                'apellido_alumno': result[5],
+                'presente': result[6]
+            })
 
-                    if comprobar < 0.85:
-                        return "La identidad es verdadera"
-                    else:
-                        return "El alumno no coincide"
-                else:
-                    return "Estás fuera del horario" """
+        return asistencias
+      

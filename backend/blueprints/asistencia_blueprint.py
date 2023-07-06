@@ -6,6 +6,8 @@ from werkzeug.utils import secure_filename
 import json
 from flask_cors import CORS, cross_origin
 import requests
+from datetime import datetime
+
 from metodos_temp import MetodosTemp
 from backend.models.asistencia_model import AsistenciaModel
 model=AsistenciaModel()
@@ -91,6 +93,8 @@ def asistencia_hoy_route():
     else:
         return jsonify({'error': 'No se encontraron datos para los parámetros proporcionados.'})
 
+
+
 @asistencia_blueprint.route('/toma_asistencia', methods=['POST'])
 @cross_origin()
 def toma_asistencia():
@@ -107,50 +111,58 @@ def toma_asistencia():
         vector1 = model.get_vector(data_dni)
         vector1 = MetodosTemp.transformacion2(vector1)
         
-        hora = request.form.get('hora')
-        
-        result = model.asistencia_valida(data_dni, hora)
-        
-        if result is not None:
+        if vector1 is not None:
             comprobar = MetodosTemp.Euclides(vector1, vector2)
             print(comprobar)
 
             if comprobar < 0.85:
-                return "La identidad es verdadera"
+                hora = request.form.get('hora')
+                result = model.asistencia_validas(data_dni, hora)
+        
+                if result is not None:
+                    return "La identidad es verdadera"
+                else:
+                    return "La identidad es verdadera, pero Estás fuera del horario"
             else:
                 return "El alumno no coincide"
         else:
-            return "Estás fuera del horario"
-
-
-@asistencia_blueprint.route('/toma', methods=['POST'])
+            return "Error al obtener el vector del alumno"
+        
+@asistencia_blueprint.route('/toma_asistencias', methods=['POST'])
 @cross_origin()
-def toma():
+def toma_asistencias():
     if request.method == 'POST':
         # File and JSON data
         data_dni = request.form.get('dni')
         if data_dni is not None:
             data_dni = json.loads(data_dni)
-
+        
         f = request.files['file']
         path = MetodosTemp.savePathAsis(f)
         file1 = MetodosTemp.callOpenFaceAPI(path)
         vector2 = MetodosTemp.transformacion(file1)
         vector1 = model.get_vector(data_dni)
         vector1 = MetodosTemp.transformacion2(vector1)
-
-        fecha = request.form.get('fecha')  # Agregar captura de la fecha
-        hora = request.form.get('hora')  # Agregar captura de la hora
-
-        result = model.asistencia_va(data_dni, fecha, hora)  # Actualizar nombre de la función
-
-        if result is not None:
+        
+        if vector1 is not None:
             comprobar = MetodosTemp.Euclides(vector1, vector2)
             print(comprobar)
 
             if comprobar < 0.85:
-                return "La identidad es verdadera"
+                hora = request.form.get('hora')
+                result = model.asistencia_validas(data_dni, hora)
+        
+                if result is not None:
+                    return "La identidad es verdadera"
+                else:
+                    return "Estás fuera del horario"
             else:
                 return "El alumno no coincide"
         else:
-            return "Estás fuera del horario"
+            return "Error al obtener el vector del alumno"
+        
+
+@asistencia_blueprint.route('/asistencias/<int:id_horario>', methods=['GET'])
+def get_todas_asistencias(id_horario):
+    asistencias = model.todas_asistencias(id_horario)
+    return jsonify(asistencias)

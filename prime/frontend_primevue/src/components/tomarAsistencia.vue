@@ -23,17 +23,24 @@
       </span>
       <br>
 
-      <span class="p-float-label">
-        <!-- <Calendar id="calendar-timeonly" v-model="asistencia.hora" timeOnly /> -->
-        <!-- <input v-model="asistencia.hora" type="text" /> -->
+      <!-- <span class="p-float-label">
+        <Calendar id="calendar-timeonly" v-model="asistencia.hora" timeOnly />
+        <input v-model="asistencia.hora" type="text" />
         
         <Calendar v-model="asistencia.fecha" />
         <label>fecha</label>
-      </span>
+      </span> -->
       <span class="p-float-label">
-        
-        <Calendar id="calendar-timeonly" v-model="asistencia.hora" timeOnly/>
-
+        <Calendar id="calendar-timeonly" v-model="asistencia.hora" timeOnly class="custom-calendar" />
+        <!-- <Textarea v-model="asistencia.hora" /> -->
+        <!-- <Calendar
+            id="calendar-timeonly"
+            v-model="asistencia.hora"
+            timeOnly
+            class="custom-calendar"
+            :dateFormat="'D, DD MMM YYYY HH:mm:ss '"
+            :valueFormat="'ddd, DD MMM YYYY HH:mm:ss '"
+          /> -->
         <label>Hora</label>
       </span>
       <br>
@@ -53,7 +60,7 @@ export default {
     return {
       asistencia: {
         dni: '',
-        fecha:'',
+        /* fecha:'', */
         hora: '' // Nuevo campo 'hora' agregado
       },
       postURL: 'http://127.0.0.1:5000',
@@ -107,10 +114,10 @@ export default {
       var data = new FormData();
       data.append('file', file, 'foto.png');
       data.append('dni', JSON.stringify(this.asistencia.dni));
-      data.append('fecha', this.asistencia.fecha);
+     /*  data.append('fecha', this.asistencia.fecha); */
       data.append('hora', this.asistencia.hora); // Se agrega el campo 'hora' al FormData
 
-      axios.post('http://127.0.0.1:5000/toma', data, { headers: { 'Content-Type': 'multipart/form-data' } })
+      axios.post('http://127.0.0.1:5000/toma_asistencia', data, { headers: { 'Content-Type': 'multipart/form-data' } })
         .then(function (response) {
           console.log(response.data);
           // Mostrar el resultado de la asistencia

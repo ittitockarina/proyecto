@@ -17,6 +17,7 @@
         <br>
         <span class="p-float-label custom-textarea">
           <Calendar id="calendar-timeonly" v-model="newHorario.hora_inicio" timeOnly class="custom-calendar" />
+          
           <label>Hora de inicio</label>
         </span>
         <br>

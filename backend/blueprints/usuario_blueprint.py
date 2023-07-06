@@ -9,6 +9,7 @@ import numpy as np
 import requests
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
+from flask_jwt_extended import jwt_required
 
 from flask import render_template
 from flask import redirect
@@ -149,6 +150,38 @@ def login():
     usuario=model.login(data_dni,data_passw)
     return jsonify(usuario)
  """
+
+def login(self, DNI, password):
+        query = """
+            SELECT usuario.id_usuario, usuario.dni, usuario.passw, usuario.foto, usuario.vector,
+                usuario.nombre, usuario.apellido, usuario.email, tipo_usuario.tipo_usuario
+            FROM usuario
+            INNER JOIN tipo_usuario ON usuario.id_tipo_usuario = tipo_usuario.id_tipo_usuario
+            WHERE usuario.dni = %(DNI)s AND usuario.passw = %(password)s
+        """
+
+        params = {
+            'DNI': str(DNI),
+            'password': str(password)
+        }
+        rv = self.mysql_pool.execute(query, params)
+        data = []
+        for result in rv:
+            content = {
+                'id_usuario': result[0],
+                'dni': result[1],
+                'passw': result[2],
+                'foto': result[3],
+                'vector': result[4],
+                'nombre': result[5],
+                'apellido': result[6],
+                'email': result[7],
+                'tipo_usuario': result[8]
+            }
+            data.append(content)
+        return data
+
+
 @usuario_blueprint.route('/login', methods=['POST'])
 @cross_origin()
 def login():
@@ -158,5 +191,32 @@ def login():
     usuario = model.login(data_dni, data_passw)
     return jsonify(usuario)
 
+""" control de acceso """
+
+
+@usuario_blueprint.route("/token", methods=["POST"])
+@cross_origin()
+def create_token():
+    id_usuario = request.json.get("id_usuario", None)
+    passw = request.json.get("passw", None)
+    
+    # Verificar la contraseña aquí
+    
+    token = model.generate_token(id_usuario)
+    return jsonify({'token': token.decode('utf-8')})
+
+
+@usuario_blueprint.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    id_usuario = get_jwt_identity()
+    token = request.headers.get('Authorization')
+    validation_result = model.validate_token(token)
+    
+    if validation_result is not None:
+        return validation_result
+    
+    # Código para manejar la ruta protegida
+    return "Acceso permitido"
 
 app.register_blueprint(usuario_blueprint, url_prefix='/usuarios')

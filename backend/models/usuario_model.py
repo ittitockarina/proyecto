@@ -1,4 +1,10 @@
 from backend.models.postgres_connection_pool import PostgreSQLPool
+from collections.abc import Mapping, Sequence
+from jwt import encode, decode
+from jwt import exceptions
+from os import getenv
+from datetime import datetime, timedelta
+from flask import jsonify
 
 class UsuarioModel:
     def __init__(self):        
@@ -114,4 +120,35 @@ class UsuarioModel:
         self.mysql_pool.execute(query, data, commit=True)
     
    
-   
+
+    def expire_dato(days: int):
+            now = datetime.now()
+            new_date = now + timedelta(days)
+            return new_date
+    
+    def write_token(data: dict):
+            token = encode(payload={**data, "exp": expire_dato(2)},
+                        key=getenv("SECRET"), algorithm="HS256")
+            return token.encode("UTF-8")
+
+
+    def generate_token(id_usuario):
+        data = {
+            "id_usuario": id_usuario
+        }
+        token = write_token(data)
+        return token
+
+    def validate_token(token, output=False):
+        try:
+            if output:
+                return decode(token, key=getenv("SECRET"), algorithms=["HS256"])
+            decode(token, key=getenv("SECRET"), algorithms=["HS256"])
+        except exceptions.DecodeError:
+            response = jsonify({"message": "Invalid Token"})
+            response.status_code = 401
+            return response
+        except exceptions.ExpiredSignatureError:
+            response = jsonify({"message": "Token Expired"})
+            response.status_code = 401
+            return response
