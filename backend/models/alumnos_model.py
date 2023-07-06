@@ -88,11 +88,11 @@ class AlumnosModel:
             content = {}
         return data
     
-""" @alumnos_blueprint.route('/datos', methods=['POST'])
-@cross_origin()
-def datos_alumno():
-    id_alumno = int(request.json['id_alumno'])
-    datos_alumno = model.datos_alumno(id_alumno)
-    return jsonify(datos_alumno)  """
+    """ @alumnos_blueprint.route('/datos', methods=['POST'])
+    @cross_origin()
+    def datos_alumno():
+        id_alumno = int(request.json['id_alumno'])
+        datos_alumno = model.datos_alumno(id_alumno)
+        return jsonify(datos_alumno)  """
 
-
+ 

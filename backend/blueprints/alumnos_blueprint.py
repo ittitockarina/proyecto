@@ -71,3 +71,68 @@ def datos_todos_alumnos():
         }
         data.append(content)
     return jsonify(data)
+
+@alumnos_blueprint.route('/ver_hora', methods=['POST'])
+@cross_origin()
+def datos():
+    query = """
+        SELECT a.id_alumno, u.nombre, u.apellido, h.hora_inicio, h.hora_fin, h.dia
+        FROM alumno a
+        JOIN usuario u ON a.id_usuario = u.id_usuario
+        JOIN matricula m ON a.id_alumno = m.id_alumno
+        JOIN grupo g ON m.id_grupo = g.id_grupo
+        JOIN horario h ON g.id_grupo = h.id_grupo
+    """
+    rv = model.PostgreSQL_Pool.execute(query)
+    data = []
+    for result in rv:
+        content = {
+            'id_alumno': result[0],
+            'nombre': result[1],
+            'apellido': result[2],
+            'hora_inicio': result[3],
+            'hora_fin': result[4],
+            'dia': result[5]
+        }
+        data.append(content)
+    return jsonify(data)
+
+@alumnos_blueprint.route('/listado', methods=['GET'])
+@cross_origin()
+def listado():
+    query = """
+        SELECT h.hora_inicio, h.hora_fin, g.nombre_grupo, c.nombre_curso
+        FROM horario h
+        JOIN grupo g ON h.id_grupo = g.id_grupo
+        JOIN curso c ON g.id_curso = c.id_curso
+    """
+    rv = model.PostgreSQL_Pool.execute(query)
+    data = []
+    for result in rv:
+        content = {
+            'hora_inicio': result[0],
+            'hora_fin': result[1],
+            'nombre_grupo': result[2],
+            'nombre_curso': result[3]
+        }
+        data.append(content)
+    return jsonify(data)
+
+@alumnos_blueprint.route('/aula', methods=['GET'])
+@cross_origin()
+def obtener_aula():
+    query = """
+        SELECT c.nombre_curso, g.nombre_grupo, g.aula
+        FROM curso c
+        JOIN grupo g ON c.id_curso = g.id_curso
+    """
+    rv = model.PostgreSQL_Pool.execute(query)
+    data = []
+    for result in rv:
+        content = {
+            'nombre_curso': result[0],
+            'nombre_grupo': result[1],
+            'aula': result[2]
+        }
+        data.append(content)
+    return jsonify(data)

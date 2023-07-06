@@ -1,71 +1,27 @@
 <template>
   <div>
-    <!-- <CursosComp /> 
-    <tomarAsistencia /> 
-    
-    <GrupoComp/> 
-    <ParticipacionComp/> 
-    <AlumnoComp/> 
-    <DocenteComp/> 
-    <HorarioComp/> 
-    <AsistenciaComp/> 
-    <MatriculaComp/> 
-    <JustificacionComp/> 
-    <TipoUserComp/>
-    <UsuarioComp />  -->
-    <vistaComp /> 
+    <principio /> 
     <h1>Bienvenido a la plataforma </h1>
-    <!-- <img class="image" src="https://www.ulasalle.edu.pe/wp-content/uploads/2022/08/ulasalle_.jpg" />
-     -->
+    
   </div>
 </template>
 
 <script>
 
+import principio from './components/principio.vue';
 
- 
-//import vistaComp from './components/vistaComp.vue';
-
-
-import vistaComp from './components/vistaComp.vue';
-/* import CursosComp from './components/CursosComp.vue';
-import tomarAsistencia from './components/tomarAsistencia.vue';
-
-import GrupoComp from './components/GrupoComp.vue';
-import ParticipacionComp from './components/ParticipacionComp.vue';
-import AlumnoComp from './components/AlumnoComp.vue';
-import DocenteComp from './components/DocenteComp.vue';
-import HorarioComp from './components/HorarioComp.vue';
-import AsistenciaComp from './components/AsistenciaComp.vue';
-import MatriculaComp from './components/MatriculaComp.vue';
-import JustificacionComp from './components/JustificacionComp.vue';
-import TipoUserComp from './components/TipoUserComp.vue';
-import UsuarioComp from './components/UsuarioComp.vue'; */
 export default {
   name: 'App',
   components: {
-   /*  tomarAsistencia, */
-    vistaComp/*  ,
-    CursosComp,
-    GrupoComp,
- ParticipacionComp,
- AlumnoComp,
- DocenteComp,
-  HorarioComp,
- AsistenciaComp,
- MatriculaComp,
- JustificacionComp,
- TipoUserComp,
- UsuarioComp */
-
+    principio
 }
 }
 </script>
 
 <style>
-/* h1{
-  color:antiquewhite;
-} */
+h1{
+  color:aqua;
+}
 .image {
   height: 20rem;
   margin: 1px;

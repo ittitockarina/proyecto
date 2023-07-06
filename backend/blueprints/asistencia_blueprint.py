@@ -120,7 +120,7 @@ def toma_asistencia():
                 result = model.asistencia_validas(data_dni, hora)
         
                 if result is not None:
-                    return "La identidad es verdadera"
+                    return "La identidad es verdadera y estas dentro del horario"
                 else:
                     return "La identidad es verdadera, pero Estás fuera del horario"
             else:
@@ -153,7 +153,7 @@ def toma_asistencias():
                 result = model.asistencia_validas(data_dni, hora)
         
                 if result is not None:
-                    return "La identidad es verdadera"
+                    return "La identidad es verdadera, y estas dentro del horario"
                 else:
                     return "Estás fuera del horario"
             else:

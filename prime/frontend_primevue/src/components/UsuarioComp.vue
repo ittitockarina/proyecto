@@ -100,6 +100,7 @@
       <label>DNI</label>
       <br>
       <span class="p-float-label custom-textarea">
+        
       <Textarea v-model="newUser.dnip" autoResize rows="1" cols="30" />
       </span>
       <br>

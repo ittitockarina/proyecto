@@ -107,6 +107,7 @@ class UsuarioModel:
             }
             data.append(content)
         return data
+    
     def agregar_participacion_alumno(self, id_alumno, cantidad_participaciones):
         query = """
             UPDATE participacion

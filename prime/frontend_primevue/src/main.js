@@ -31,7 +31,7 @@ import Calendar from 'primevue/calendar';
 import InputSwitch from 'primevue/inputswitch';
 
 //componentes inicio de sesion
-import AdminLogin from './components/AdminLogin.vue';
+
 import AlumnoLogin from './components/AlumnoLogin.vue';
 import DocenteLogin from './components/DocenteLogin.vue';
 //  componentes que se utilizarán en las rutas
@@ -48,13 +48,17 @@ import JustificacionComp from './components/JustificacionComp.vue';
 import TipoUserComp from './components/TipoUserComp.vue';
 import UsuarioComp from './components/UsuarioComp.vue';
 import vistaParticipa from './components/vistaParticipa.vue';
-
+import vistaComp from './components/vistaComp.vue';
+import listado from './components/listado.vue';
+import justiAlumno from './components/justiAlumno.vue';
+import justiDocente from './components/justiDocente.vue';
+import listadoDocente from './components/listadoDocente.vue';
 const app = createApp(App);
 
 
 // componentes correspondientes
 const routes = [
-  { path: '/Admin', component: AdminLogin },
+  
   { path: '/Alumnos', component: AlumnoLogin },
   { path: '/Docentes', component: DocenteLogin },
   ///////////////////////////
@@ -71,14 +75,64 @@ const routes = [
   { path: '/tipo-usuario', component: TipoUserComp },
   { path: '/usuario', component: UsuarioComp },
   { path: '/vistaParticipa', component: vistaParticipa },
-  
+  { path: '/vistaComp', component: vistaComp },
+  { path: '/listado', component: listado },
+  { path: '/justiAlumno', component: justiAlumno },
+  { path: '/justiDocente', component: justiDocente },
+  { path: '/listadoDocente', component: listadoDocente },
 ];
-
+/* const router = createRouter({
+  history: createWebHistory('/'),
+  routes: [
+    // tus rutas aquí
+    { path: '/Admin', component: AdminLogin },
+    { path: '/Alumnos', component: AlumnoLogin },
+    { path: '/Docentes', component: DocenteLogin },
+    ///////////////////////////
+    { path: '/tomar-asistencia', component: tomarAsistencia },
+    { path: '/cursos', component: CursosComp },
+    { path: '/grupo', component: GrupoComp },
+    { path: '/participacion', component: ParticipacionComp },
+    { path: '/alumno', component: AlumnoComp },
+    { path: '/docente', component: DocenteComp },
+    { path: '/horario', component: HorarioComp },
+    { path: '/asistencia', component: AsistenciaComp },
+    { path: '/matricula', component: MatriculaComp },
+    { path: '/justificacion', component: JustificacionComp },
+    { path: '/tipo-usuario', component: TipoUserComp },
+    { path: '/usuario', component: UsuarioComp },
+    { path: '/vistaParticipa', component: vistaParticipa },
+  ]
+}); */
 const router = createRouter({
   history: createWebHistory('/'),
   routes
 });
 
+
+/* const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/Admin', component: AdminLogin },
+    { path: '/Alumnos', component: AlumnoLogin },
+    { path: '/Docentes', component: DocenteLogin },
+    { path: '/tomar-asistencia', component: tomarAsistencia },
+    { path: '/cursos', component: CursosComp },
+    { path: '/grupo', component: GrupoComp },
+    { path: '/participacion', component: ParticipacionComp },
+    { path: '/alumno', component: AlumnoComp },
+    { path: '/docente', component: DocenteComp },
+    { path: '/horario', component: HorarioComp },
+    { path: '/asistencia', component: AsistenciaComp },
+    { path: '/matricula', component: MatriculaComp },
+    { path: '/justificacion', component: JustificacionComp },
+    { path: '/tipo-usuario', component: TipoUserComp },
+    { path: '/usuario', component: UsuarioComp },
+    { path: '/vistaParticipa', component: vistaParticipa },
+  ],
+});
+
+app.use(router); */
 
 app.use(ToastService);
 app.use(PrimeVue);

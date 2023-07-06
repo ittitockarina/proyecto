@@ -17,6 +17,16 @@ const items = ref([
     icon: 'pi pi-fw pi-home'
   },
   {
+    label: 'tipoUsuario',
+    url: '/tipo-usuario',
+    icon: 'pi pi-fw pi-users'
+  },
+  {
+    label: 'usuario',
+    url: '/usuario',
+    icon: 'pi pi-fw pi-user'
+  },
+  {
     label: 'Horario',
     url: '/horario',
     icon: 'pi pi-fw pi-calendar-times'
@@ -50,6 +60,16 @@ const items = ref([
   {
     label: 'Participaciones',
     url: '/participacion',
+    icon: 'pi pi-fw pi-copy'
+  },
+  {
+    label: 'alumnos',
+    url: '/alumno',
+    icon: 'pi pi-fw pi-user'
+  },
+  {
+    label: 'asistencia',
+    url: '/asistencia',
     icon: 'pi pi-fw pi-copy'
   }
 ]);

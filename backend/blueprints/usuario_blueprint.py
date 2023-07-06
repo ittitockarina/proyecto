@@ -182,9 +182,9 @@ def login(self, DNI, password):
         return data
 
 
-@usuario_blueprint.route('/login', methods=['POST'])
+@usuario_blueprint.route('/logi', methods=['POST'])
 @cross_origin()
-def login():
+def alogin():
     global model
     data_dni = request.json['DNI']
     data_passw = request.json['password']
@@ -218,5 +218,34 @@ def protected():
     
     # Código para manejar la ruta protegida
     return "Acceso permitido"
+
+@usuario_blueprint.route('/login', methods=['POST'])
+@cross_origin()
+def login():
+    global model
+    data_dni = request.json['dni']
+    data_passw = request.json['passw']
+    usuario = model.login(data_dni, data_passw)
+
+    if usuario:
+        tipo_usuario = usuario[0]['tipo_usuario']
+
+        if tipo_usuario == 'Admin':
+            # Lógica para autenticación de administradores
+            # ...
+            return jsonify({'tipo_usuario': 'Admin'})
+        elif tipo_usuario == 'Docente':
+            # Lógica para autenticación de usuarios normales
+            # ...
+            return jsonify({'tipo_usuario': 'Docente'})
+        elif tipo_usuario == 'Alumno':
+            # Lógica para autenticación de usuarios normales
+            # ...
+            return jsonify({'tipo_usuario': 'Alumno'})
+        else:
+            return jsonify({'tipo_usuario': 'No válido'})
+    else:
+        return jsonify({'tipo_usuario': 'Credenciales inválidas'})
+
 
 app.register_blueprint(usuario_blueprint, url_prefix='/usuarios')
